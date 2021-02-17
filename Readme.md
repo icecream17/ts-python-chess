@@ -1,11 +1,13 @@
 
 # ts-python-chess
 
-*****This is Not finished at all*****
+***This is Not finished at all***
 
 I decided to make my own version of chess.js
 
 But I got lazy. So instead this is just a typescript version of [python-chess](https://github.com/niklasf/python-chess)
+
+(Now it's just called [chess](https://pypi.org/project/chess/))
 
 Which totally defeats the purpose, but oh well.
 
@@ -16,12 +18,67 @@ So it'll work in browser too. As long as your browser is recent enough.
 
 ```npm install --save-dev js-python-chess```
 
-You would only need the ```src``` folder... but there's the license too,  
-so maybe just use the whole thing.
+### Type
 
-```src/chess.js``` is the main source file  
-```src/chessboard.js``` is the chessboard  
-...and the rest of the files are also just as self explanatory
+TypeScript doesn't support types the way Python does.  
+For example, in Python:
+
+```python
+import chess
+
+print(chess.Color) # <class 'bool'>
+print(chess.PieceType) # <class 'int'>
+
+# type(x) for the exact type
+print(type(false) is chess.Color) # True
+print(type(2) is chess.PieceType) # True
+
+# isinstance(x, type) which also supports derived types
+print(isinstance(false, chess.Color)) # True
+print(isinstance(2, chess.PieceType)) # True
+```
+
+But even thought it's TypeScript instead of JavaScript, type checking is still kinda a mess...
+
+```typescript
+class SomeClass {}
+
+typeof 2                           // "number"
+typeof Object(2)                   // "object"
+typeof new SomeClass               // "object"
+2 instanceof Number                // false
+Object(2) instanceof Number        // true
+new SomeClass instanceof SomeClass // true
+```
+
+This isn't very useful.  
+I agree with ```typeof``` for primitives, and ```instanceof``` for objects.
+
+The ```chess.Color``` won't be very useful - it'll just copy the python-chess value.
+
+```python
+Color = bool
+```
+
+```typescript
+const Chess = {
+   Color: Boolean
+}
+```
+
+So I added some new "isType" functions.
+
+```typescript
+Chess.isColor(true)  // true
+Chess.isPieceType(5) // true
+
+// NOTE: python int = javascript BigInt
+Chess.isSquare(10)    // false
+Chess.isSquare(10n)   // True
+Chess.isSquare(3858n) // "out of range", becuase python-chess outputs "True".
+                      // So I have to output a truthy value too. But hopefully this is more helpful.
+Chess.isSquare(10.5n) // SyntaxError
+```
 
 ### Developer notes
 

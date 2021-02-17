@@ -20,10 +20,60 @@
 
 import { Chess } from '../src/chess'
 
+// Type checking is done by default
+// import { Color, PieceType } from '../src/types'
+
+import { FunctionTest } from './function-test'
+
 test('It actually parses', () => {
    expect('Pass').toBe('Pass')
 })
 
-test('Chess.Color === boolean', () => {
-   expect(Chess.Color).toBe(Boolean)
+describe('Matching values', () => {
+   test('Colors', () => {
+      expect(Chess.COLORS).toEqual([
+         Chess.WHITE,
+         Chess.BLACK
+      ])
+   })
+
+   test('Piece types', () => {
+      expect(Chess.PIECE_TYPES).toEqual([
+         Chess.PAWN,
+         Chess.KNIGHT,
+         Chess.BISHOP,
+         Chess.ROOK,
+         Chess.QUEEN,
+         Chess.KING
+      ])
+   })
+})
+
+describe('Chess.isType functions', () => {
+   test('Chess.isColor', () => {
+      FunctionTest(Chess.isColor, false, { types: ['boolean'] })
+
+      expect(Chess.isColor(false)).toBe(true)
+      expect(Chess.isColor(true)).toBe(true)
+   })
+
+   test('Chess.isPieceType', () => {
+      expect(Chess.isPieceType(0)).toBe(false)
+      expect(Chess.isPieceType(1)).toBe(false)
+      expect(Chess.isPieceType(4)).toBe(false)
+      expect(Chess.isPieceType(6)).toBe(false)
+
+      FunctionTest(Chess.isColor, false, { types: ['bigint'] })
+
+      expect(Chess.isPieceType(-7n)).toBe('outside of range')
+      expect(Chess.isPieceType(-3n)).toBe('outside of range')
+      expect(Chess.isPieceType(-1n)).toBe('outside of range')
+      expect(Chess.isPieceType(0n)).toBe('outside of range')
+      expect(Chess.isPieceType(1n)).toBe(true)
+      expect(Chess.isPieceType(2n)).toBe(true)
+      expect(Chess.isPieceType(5n)).toBe(true)
+      expect(Chess.isPieceType(6n)).toBe(true)
+      expect(Chess.isPieceType(7n)).toBe('outside of range')
+      expect(Chess.isPieceType(314n)).toBe('outside of range')
+   })
 })

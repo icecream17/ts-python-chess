@@ -1,11 +1,13 @@
 {
    "compilerOptions": {
+      "esModuleInterop": true,
+      "forceConsistentCasingInFileNames": true,
       "lib": [
          "ESNext"
       ],
       // https://www.typescriptlang.org/tsconfig#typeAcquisition
       "strict": true,
-      "strictNullChecks": true
+      "target": "ESNext"
    },
    "env": [
       "jest"
@@ -24,7 +26,6 @@
          3
       ]
    },
-   "target": "ESNext",
    "types": [
       "jest",
       "node"

@@ -1,10 +1,9 @@
-// This file is part of the js-python-chess package, which is mostly
-// derived from the python-chess library
-//
-// This file happens to not be directly derived from the
-// python-chess library
+// This file is
+// 1. part of the js-python-chess package.
+// 2. derived from the python-chess library
 //
 // Copyright (C) 2021 Steven Nguyen <icecream17.github@gmail.com>
+// Copyright (C) 2012-2021 Niklas Fiekas <niklas.fiekas@backscattering.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,12 +18,5 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-const chalk = require('chalk')
-
-// const args = process.argv.slice(2)
-
-const log = console.log
-const bold = chalk.bold
-const success = bold.green
-
-log(bold("Result: ") + success(" PASSED!!! "))
+export type Color = boolean
+export type PieceType = 1n | 2n | 3n | 4n | 5n | 6n
