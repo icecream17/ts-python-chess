@@ -1,0 +1,32 @@
+{
+   "compilerOptions": {
+      "lib": [
+         "ESNext"
+      ],
+      // https://www.typescriptlang.org/tsconfig#typeAcquisition
+      "strict": true,
+      "strictNullChecks": true
+   },
+   "env": [
+      "jest"
+   ],
+   "exclude": [
+      "node_modules"
+   ],
+   "parser": "@typescript-eslint/parser",
+   "parserOptions": {
+      "ecmaVersion": "ESNext",
+      "sourceType": "module"
+   },
+   "rules": {
+      "indent": [
+         "error",
+         3
+      ]
+   },
+   "target": "ESNext",
+   "types": [
+      "jest",
+      "node"
+   ]
+}
