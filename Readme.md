@@ -25,11 +25,6 @@ so maybe just use the whole thing.
 
 ### Developer notes
 
-If you want to actually edit and change it, feel free.  
-The Apache License is just a more detailed version of the MIT License.
+I'm just using the same license as python-chess
 
-(Not legal advice)
-
-But note that if you want to run the tests, you have to copy and paste the  
-```babel.config.json``` file to the folder containing the root folder,  
-because of the way babel works. By which I mean, doesn't work.
+This used to have something here about how it didn't work without a worka-round, but that's fixed.
