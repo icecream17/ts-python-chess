@@ -18,7 +18,7 @@ So it'll work in browser too. As long as your browser is recent enough.
 
 ```npm install --save-dev js-python-chess```
 
-### Type
+### Types
 
 TypeScript doesn't support types the way Python does.  
 For example, in Python:
@@ -72,13 +72,21 @@ So I added some new "isType" functions.
 Chess.isColor(true)  // true
 Chess.isPieceType(5) // true
 
-// NOTE: python int = javascript BigInt
-Chess.isSquare(10)    // false
-Chess.isSquare(10n)   // True
-Chess.isSquare(3858n) // "out of range", becuase python-chess outputs "True".
-                      // So I have to output a truthy value too. But hopefully this is more helpful.
-Chess.isSquare(10.5n) // SyntaxError
+// NOTE: I can't use BigInt to represent 'int' in python, because of things like Array[0n]
+Chess.isSquare(10n)  // false
+Chess.isSquare(10)   // true
+Chess.isSquare(3858) // "out of range"
+                     // Becuase python-chess outputs "True".
+                     // I have to output a truthy value too.
+                     // But hopefully this is more helpful.
+Chess.isSquare(10.5) // false - not an integer
+Chess.isSquare(2.5)  // false
+Chess.isSquare(4)    // true
 ```
+
+Some other notes about types:
+
+* ```None``` corresponds to ```null```
 
 ### Developer notes
 

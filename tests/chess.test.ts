@@ -29,15 +29,15 @@ test('It actually parses', () => {
    expect('Pass').toBe('Pass')
 })
 
-describe('Matching values', () => {
-   test('Colors', () => {
+describe('The corresponding constant chess values match', () => {
+   test('Chess.COLORS', () => {
       expect(Chess.COLORS).toEqual([
          Chess.WHITE,
          Chess.BLACK
       ])
    })
 
-   test('Piece types', () => {
+   test('Chess.PIECE_TYPES', () => {
       expect(Chess.PIECE_TYPES).toEqual([
          Chess.PAWN,
          Chess.KNIGHT,
@@ -49,7 +49,7 @@ describe('Matching values', () => {
    })
 })
 
-describe('Chess.isType functions', () => {
+describe('Chess.isType functions work properly', () => {
    test('Chess.isColor', () => {
       FunctionTest(Chess.isColor, false, { types: ['boolean'] })
 
@@ -58,22 +58,32 @@ describe('Chess.isType functions', () => {
    })
 
    test('Chess.isPieceType', () => {
-      expect(Chess.isPieceType(0)).toBe(false)
-      expect(Chess.isPieceType(1)).toBe(false)
-      expect(Chess.isPieceType(4)).toBe(false)
-      expect(Chess.isPieceType(6)).toBe(false)
+      FunctionTest(Chess.isColor, false, { types: ['number'] })
 
-      FunctionTest(Chess.isColor, false, { types: ['bigint'] })
+      expect(Chess.isPieceType(-7)).toBe('outside of range')
+      expect(Chess.isPieceType(-3)).toBe('outside of range')
+      expect(Chess.isPieceType(-1)).toBe('outside of range')
+      expect(Chess.isPieceType(0)).toBe('outside of range')
+      expect(Chess.isPieceType(0.5)).toBe(false)
+      expect(Chess.isPieceType(1)).toBe(true)
+      expect(Chess.isPieceType(2)).toBe(true)
+      expect(Chess.isPieceType(Math.PI)).toBe(false)
+      expect(Chess.isPieceType(5)).toBe(true)
+      expect(Chess.isPieceType(6)).toBe(true)
+      expect(Chess.isPieceType(7)).toBe('outside of range')
+      expect(Chess.isPieceType(314)).toBe('outside of range')
+      expect(Chess.isPieceType(NaN)).toBe(false)
+      expect(Chess.isPieceType(Infinity)).toBe(false)
+      expect(Chess.isPieceType(-Infinity)).toBe(false)
+   })
+})
 
-      expect(Chess.isPieceType(-7n)).toBe('outside of range')
-      expect(Chess.isPieceType(-3n)).toBe('outside of range')
-      expect(Chess.isPieceType(-1n)).toBe('outside of range')
-      expect(Chess.isPieceType(0n)).toBe('outside of range')
-      expect(Chess.isPieceType(1n)).toBe(true)
-      expect(Chess.isPieceType(2n)).toBe(true)
-      expect(Chess.isPieceType(5n)).toBe(true)
-      expect(Chess.isPieceType(6n)).toBe(true)
-      expect(Chess.isPieceType(7n)).toBe('outside of range')
-      expect(Chess.isPieceType(314n)).toBe('outside of range')
+describe('Methods match to constant chess values', () => {
+   test.each(Chess.PIECE_TYPES)('Chess.piece_symbol(%i) is equal to Chess.PIECE_SYMBOLS[%i]', (pieceType) => {
+      expect(Chess.piece_symbol(pieceType)).toBe(Chess.PIECE_SYMBOLS[pieceType])
+   })
+
+   test.each(Chess.PIECE_TYPES)('Chess.piece_name(%i) is equal to Chess.PIECE_NAMES[%i]', (pieceType) => {
+      expect(Chess.piece_name(pieceType)).toBe(Chess.PIECE_NAMES[pieceType])
    })
 })

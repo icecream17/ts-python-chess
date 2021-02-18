@@ -102,7 +102,7 @@ export function FunctionTest (
    toTest.set('boolean', [true, false])
    toTest.set('string', ['', 'test', 'It worls!', '\n\t\fΣ⬖😁', JSON.stringify([2, 3])])
    toTest.set('number', [NaN, -1, -1.5, Math.random(), Infinity, -Infinity, 0, 7, 123 * 7, 123 ** 7, 10e100])
-   toTest.set('bigint', [-34958n, 0n, 14n, 46n << 74n])
+   toTest.set('bigint', [-34958n, -2n, 0n, 5n, 14n, 46n << 74n])
 
    // eslint-disable-next-line symbol-description
    toTest.set('symbol', [Symbol(), Symbol('apple'), Symbol(59034)])

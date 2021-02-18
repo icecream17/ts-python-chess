@@ -18,7 +18,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import { Color, PieceType } from './types'
+/*  Never gonna give you up, never gonna let you down,    */
+/*  never gonna turn around, and, desert you.             */
+
+import { Color, PieceType, None } from './types'
 
 /**
  * @fileoverview
@@ -43,9 +46,9 @@ export const Chess = {
    COLORS: [true, false] as Color[],
    COLOR_NAMES: ['black', 'white'],
 
-   PieceType: BigInt,
+   PieceType: Number,
    isPieceType (value?: unknown): boolean | 'outside of range' {
-      if (typeof value === 'bigint') {
+      if (typeof value === 'number' && Number.isInteger(value)) {
          return (value >= 1n && value < 7n) ? true : 'outside of range'
       } else {
          return false
@@ -53,11 +56,40 @@ export const Chess = {
    },
 
    // I'll try out BigInt for now
-   PAWN: 1n as PieceType,
-   KNIGHT: 2n as PieceType,
-   BISHOP: 3n as PieceType,
-   ROOK: 4n as PieceType,
-   QUEEN: 5n as PieceType,
-   KING: 6n as PieceType,
-   PIECE_TYPES: [1n, 2n, 3n, 4n, 5n, 6n] as PieceType[],
+   PAWN: 1 as PieceType,
+   KNIGHT: 2 as PieceType,
+   BISHOP: 3 as PieceType,
+   ROOK: 4 as PieceType,
+   QUEEN: 5 as PieceType,
+   KING: 6 as PieceType,
+   PIECE_TYPES: [1, 2, 3, 4, 5, 6] as PieceType[],
+   PIECE_SYMBOLS: [None, 'p', 'n', 'b', 'r', 'q', 'k'] as [null, ...string[]],
+   PIECE_NAMES: [None, 'pawn', 'knight', 'bishop', 'rook', 'queen', 'king'] as [null, ...string[]],
+
+   /** Gets the piece letter for a piece */
+   piece_symbol (pieceType: PieceType): string {
+      return Chess.PIECE_SYMBOLS[pieceType]
+   },
+
+   piece_name (pieceType: PieceType): string {
+      return Chess.PIECE_NAMES[pieceType]
+   },
+
+   UNICODE_PIECE_SYMBOLS: {
+      R: '♖', r: '♜',
+      N: '♘', n: '♞',
+      B: '♗', b: '♝',
+      Q: '♕', q: '♛',
+      K: '♔', k: '♚',
+      P: '♙', p: '♟',
+   },
+   FILE_NAMES: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
+   RANK_NAMES: ['1', '2', '3', '4', '5', '6', '7', '8'],
+
+   /** The FEN for the standard chess starting position. */
+   STARTING_FEN: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+
+   /** The board part of the FEN for the standard chess starting position. */
+   STARTING_BOARD_FEN: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR',
+
 }

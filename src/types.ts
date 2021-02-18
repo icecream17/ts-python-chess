@@ -18,5 +18,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+// The side to move or color of a piece
 export type Color = boolean
-export type PieceType = 1n | 2n | 3n | 4n | 5n | 6n
+export type PieceType = 1 | 2 | 3 | 4 | 5 | 6
+
+// For easy copy-pasting
+export const None = null

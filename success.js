@@ -27,4 +27,4 @@ const log = console.log
 const bold = chalk.bold
 const success = bold.green
 
-log(bold("Result: ") + success(" PASSED!!! "))
+log(bold('Result: ') + success(' PASSED!!! ') + '\n')
