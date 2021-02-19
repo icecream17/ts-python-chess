@@ -4,6 +4,7 @@
    "description": "Yet another chess package. python-chess, but in javascript",
    "main": "src/chess.js",
    "scripts": {
+      "build": "npm install",
       "test": "npm run test-functionality && npm run test-syntax",
       "test-functionality": "jest",
       "test-syntax": "eslint src/*.ts tests/*.test.ts && node success.js"
