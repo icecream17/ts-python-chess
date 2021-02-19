@@ -87,6 +87,9 @@ Chess.isSquare(4)    // true
 Some other notes about types:
 
 * ```None``` corresponds to ```null```
+* ```chess.Status is an Enum``` in python, but that's Really Really hard to implement exactly
+  * Enums can't be pickled or unpickled
+
 
 ### Developer notes
 

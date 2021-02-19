@@ -19,10 +19,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import { Chess } from '../src/chess'
-
-// Type checking is done by default
-// import { Color, PieceType } from '../src/types'
-
+import { PieceType } from '../src/types'
 import { FunctionTest } from './function-test'
 
 test('It actually parses', () => {
@@ -79,11 +76,13 @@ describe('Chess.isType functions work properly', () => {
 })
 
 describe('Methods match to constant chess values', () => {
-   test.each(Chess.PIECE_TYPES)('Chess.piece_symbol(%i) is equal to Chess.PIECE_SYMBOLS[%i]', (pieceType) => {
+   const PIECE_TYPES_DOUBLED: Array<[PieceType, PieceType]> = Chess.PIECE_TYPES.map(type => [type, type])
+
+   test.each(PIECE_TYPES_DOUBLED)('Chess.piece_symbol(%i) is equal to Chess.PIECE_SYMBOLS[%i]', (pieceType) => {
       expect(Chess.piece_symbol(pieceType)).toBe(Chess.PIECE_SYMBOLS[pieceType])
    })
 
-   test.each(Chess.PIECE_TYPES)('Chess.piece_name(%i) is equal to Chess.PIECE_NAMES[%i]', (pieceType) => {
+   test.each(PIECE_TYPES_DOUBLED)('Chess.piece_name(%i) is equal to Chess.PIECE_NAMES[%i]', (pieceType) => {
       expect(Chess.piece_name(pieceType)).toBe(Chess.PIECE_NAMES[pieceType])
    })
 })
