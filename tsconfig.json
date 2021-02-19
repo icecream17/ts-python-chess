@@ -5,6 +5,8 @@
       "lib": [
          "ESNext"
       ],
+      "moduleResolution": "node",
+
       // https://www.typescriptlang.org/tsconfig#typeAcquisition
       "strict": true,
       "target": "ESNext"
