@@ -262,7 +262,7 @@ const MapProxy: MapConstructor = new Proxy(Map, MapProxyHandler)
 
  // To avoid this, you can convert to string:
  dictionary.get(String(0)) // 'Test'
- 
+
  // Or use the "isRegularProperty" argument
  dictionary.get(0, true) // 'Test'
  ```
@@ -298,7 +298,7 @@ export class Dictionary extends MapProxy {
    delete (key: any, isRegularProperty: boolean = false): boolean {
       if (isRegularProperty) {
          // @ts-expect-error WAIT UNTIL VERSION: 4.3
-         return Map.prototype.delete.call(this[specialKeys.ProxyTarget], key) && delete this[specialKeys.ProxyTarget][key]
+         return Map.prototype.delete.call(this[specialKeys.ProxyTarget], key) && delete this[specialKeys.ProxyTarget][key] // eslint-disable-line @typescript-eslint/no-dynamic-delete
       }
       // @ts-expect-error WAIT UNTIL VERSION: 4.3
       return Map.prototype.delete.call(this[specialKeys.ProxyTarget], key)
