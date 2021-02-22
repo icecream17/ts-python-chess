@@ -17,7 +17,7 @@ describe('assignAll', () => {
 describe('Dictionary', () => {
    const testDictionary = new Dictionary()
 
-   test('Property setting and getting', () => {
+   test('Property setting, getting, having', () => {
       testDictionary.property1 = 7
       expect(testDictionary.property1).toBe(7)
       expect(testDictionary.get('property1')).toBe(7)
@@ -42,7 +42,30 @@ describe('Dictionary', () => {
       expect(testDictionary.get(testDictionary)).toBe('self')
       expect(testDictionary.has(testDictionary)).toBe(true)
 
+      testDictionary.set(Number, 'value 2', false)
+      expect(testDictionary.has(Number)).toBe(true)
+      expect(testDictionary.get(Number)).toBe('value 2')
+      // @ts-expect-error Intentional functionality
+      expect(Number in testDictionary).toBe(true)
+      // @ts-expect-error Intentional functionality
+      expect(testDictionary[Number]).toBe('value 2') // Still works!
+
       expect(testDictionary.has(1)).toBe(false)
+   })
+
+   // Depends on previous test: Property setting and getting
+   test('Property deletion, clear method', () => {
+      delete testDictionary.property1
+      expect(testDictionary?.property1).toBeUndefined()
+      expect(testDictionary.has('property1')).toBe(false)
+
+      testDictionary.clear()
+      expect(testDictionary.has(testDictionary)).toBe(false)
+      expect(testDictionary.has(testDictionary, true)).toBe(true) // !!!
+
+      testDictionary.clear(true)
+      expect(testDictionary?.[0]).toBeUndefined()
+      expect(testDictionary.has(0, true)).toBe(false)
    })
 
    test('Proxy handlers', () => {
@@ -53,16 +76,6 @@ describe('Dictionary', () => {
       expect(() => {
          Reflect.defineProperty(testDictionary, 'ReflectProperty1', { configurable: false })
       }).toThrow(TypeError)
-   })
-
-   test('Property deletion', () => {
-      delete testDictionary.property1
-      expect(testDictionary?.property1).toBeUndefined()
-      expect(testDictionary.has('property1')).toBe(false)
-
-      testDictionary.clear()
-      expect(testDictionary?.[0]).toBeUndefined()
-      expect(testDictionary.has(0, true)).toBe(false)
    })
 })
 
