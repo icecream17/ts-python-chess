@@ -68,7 +68,7 @@ class PieceTypeClass extends Number {
       return Number(new PieceTypeClass(value))
    }
 
-   static [Symbol.hasInstance] (value?: unknown): value is number ? true | 'outside of range' : false {
+   static [Symbol.hasInstance] (value?: unknown): boolean | 'outside of range' {
       if (typeof value === 'number' && Number.isInteger(value)) {
          return (value >= 1 && value < 7) ? true : 'outside of range'
       } else {
