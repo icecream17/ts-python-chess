@@ -115,7 +115,7 @@ const MapProxyHandler = {
    construct (target: MapConstructor, argArray: any[], newTarget: Function) {
       const innerMap = Reflect.construct(target, argArray, newTarget)
       const MapInstanceProxy = new Proxy(innerMap, {
-         defineProperty (target, property: any, newDescriptor: PropertyDescriptor) {
+         defineProperty (target, property: any, newDescriptor: PropertyDescriptor): boolean {
             const targetIsExtensible = Object.isExtensible(target)
             const currentDescriptor = Object.getOwnPropertyDescriptor(target, property)
             const settingConfigurable = newDescriptor?.configurable ?? false
@@ -136,21 +136,19 @@ const MapProxyHandler = {
                   throw TypeError('(Writable non-configureable Proxy properties) can\'t turn into (non-writable properties)')
                }
             }
-            Reflect.defineProperty(target, property, newDescriptor)
+
             if (Specification.AbstractOperations.IsDataDescriptor(newDescriptor)) {
-               target.set(property, newDescriptor.value)
+               return Reflect.defineProperty(target, property, newDescriptor) && target.set(property, newDescriptor.value)
             }
-            return target
+            return Reflect.defineProperty(target, property, newDescriptor)
          },
-         deleteProperty (target, property) {
+         deleteProperty (target, property): boolean {
             if (Object.getOwnPropertyDescriptor(target, property)?.configurable === false) {
                throw TypeError('Cannot delete a non-configurable property')
             }
 
             // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-            delete target[property]
-            target.delete(property)
-            return true
+            return delete target[property] && target.delete(property)
          },
          get (target, property, _receiver): any {
             const descriptor = Object.getOwnPropertyDescriptor(target, property)
@@ -181,7 +179,7 @@ const MapProxyHandler = {
          has (target, property) {
             return (property in target) || target.has(property)
          },
-         set (target, property, value, _reciever) {
+         set (target, property, value, _reciever): boolean {
             const descriptor = Object.getOwnPropertyDescriptor(target, property)
             if (descriptor?.configurable === false) {
                if (descriptor?.writable === false) {
@@ -193,8 +191,7 @@ const MapProxyHandler = {
                }
             }
             target[property] = value
-            target.set(property, value)
-            return true
+            return target[property] === value && target.set(property, value)
          }
       })
 
