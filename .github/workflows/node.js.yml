@@ -10,7 +10,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  build_test_and_upload_coverage:
 
     runs-on: ${{ matrix.os }}
 
@@ -35,3 +35,4 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
+    - run: npm run upload-coverage
