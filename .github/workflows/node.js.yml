@@ -14,6 +14,9 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
+    env:
+      CODECOV_TOKEN: d0158c09-4dcb-45d8-ac3d-508395b065d4
+
     strategy:
       matrix:
         node-version: [15.x]
