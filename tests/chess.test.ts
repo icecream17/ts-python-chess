@@ -103,7 +103,7 @@ describe('Chess.isType functions work properly', () => {
 })
 
 describe('Methods match to constant chess values', () => {
-   const PIECE_TYPES_DOUBLED: Array<[PieceType, PieceType]> = Chess.PIECE_TYPES.map(type => [type, type])
+   const PIECE_TYPES_DOUBLED: Array<[PieceType, PieceType]> = Chess.PIECE_TYPES.map(type: PieceType => [type, type])
 
    test.each(PIECE_TYPES_DOUBLED)('Chess.piece_symbol(%i) is equal to Chess.PIECE_SYMBOLS[%i]', (pieceType) => {
       expect(Chess.piece_symbol(pieceType)).toBe(Chess.PIECE_SYMBOLS[pieceType])
