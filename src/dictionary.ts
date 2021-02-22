@@ -69,7 +69,7 @@ export const Specification = {
       IsGenericDescriptor (Desc: PropertyDescriptor) {
          return !(Specification.AbstractOperations.IsAccessorDescriptor(Desc) && Specification.AbstractOperations.IsDataDescriptor(Desc))
       },
-      IsCompatiblePropertyDescriptor (extensible: boolean, Desc: PropertyDescriptor, current: PropertyDescriptor): boolean {
+      IsCompatiblePropertyDescriptor (extensible: boolean, Desc: PropertyDescriptor, current?: PropertyDescriptor): boolean {
          if (current === undefined) {
             return extensible
          }
