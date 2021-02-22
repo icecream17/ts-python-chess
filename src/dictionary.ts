@@ -91,7 +91,7 @@ export const Specification = {
          if (!('value' in Desc || 'writable' in Desc || 'get' in Desc || 'set' in Desc)) {
             // then don't do anything
             // Specification note: No further validation is required
-         } else if (Specification.AbstractOperations.IsDataDescriptor(current) !== Specification.AbstractOperations.IsDataDescriptor(Desc) && current.configurable === false) {
+         } else if ((Specification.AbstractOperations.IsDataDescriptor(current) !== Specification.AbstractOperations.IsDataDescriptor(Desc)) && current.configurable === false) {
             return false
          } else if (Specification.AbstractOperations.IsDataDescriptor(current) && Specification.AbstractOperations.IsDataDescriptor(Desc) && current.configurable === false && current.writable === false) {
             return !(
