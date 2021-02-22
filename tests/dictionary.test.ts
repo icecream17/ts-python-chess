@@ -27,9 +27,11 @@ describe('Dictionary', () => {
       testDictionary[0] = specialKeys.ProxyTarget
       expect(testDictionary[0]).toBe(specialKeys.ProxyTarget)
       expect(testDictionary.get(0)).toBeUndefined() // Be careful! Read the documentation!
+      expect(testDictionary.get(0, true)).toBe(specialKeys.ProxyTarget)
       expect(testDictionary.get('0')).toBe(specialKeys.ProxyTarget)
-      expect(testDictionary.has(0)).toBe(false)
-      expect(testDictionary.has('0')).toBe(true) // Be careful! Read the documentation!
+      expect(testDictionary.has(0)).toBe(false) // Be careful! Read the documentation!
+      expect(testDictionary.has(0, true)).toBe(true)
+      expect(testDictionary.has('0')).toBe(true)
       expect(0 in testDictionary).toBe(true)
 
       testDictionary.set(testDictionary, 'self')
@@ -49,7 +51,7 @@ describe('Dictionary', () => {
       }).toThrow(TypeError)
       expect(Reflect.defineProperty(testDictionary, 'ReflectProperty1', { configurable: true })).toBe(true)
       expect(() => {
-         Reflect.defineProperty(testDictionary, 'ReflectProperty1', { configurable: true })
+         Reflect.defineProperty(testDictionary, 'ReflectProperty1', { configurable: false })
       }).toThrow(TypeError)
    })
 
@@ -60,7 +62,7 @@ describe('Dictionary', () => {
 
       testDictionary.clear()
       expect(testDictionary?.[0]).toBeUndefined()
-      expect(testDictionary.has(0)).toBe(false)
+      expect(testDictionary.has(0, true)).toBe(false)
    })
 })
 
