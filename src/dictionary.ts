@@ -292,8 +292,8 @@ export class Dictionary extends MapProxy {
       }
    }
 
-   delete (key: any, isRegularProperty: boolean = false): isRegularProperty is true ? [boolean, boolean] : boolean;
-   delete (key: any): boolean {
+   // Not supported???
+   delete (key: any, isRegularProperty: boolean = false): isRegularProperty is true ? [boolean, boolean] : boolean {
       if (isRegularProperty) {
          // @ts-expect-error WAIT UNTIL VERSION: 4.3
          return [Map.prototype.delete.call(this[specialKeys.ProxyTarget], key), delete this[specialKeys.ProxyTarget][key]]
