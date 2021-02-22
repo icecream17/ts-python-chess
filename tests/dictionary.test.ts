@@ -66,17 +66,17 @@ describe('Specification', () => {
 
    test('IsAccessorDescriptor', () => {
       expect(Specification.AbstractOperations.IsAccessorDescriptor({
-         get() {return 7},
-         set() {}
+         get () { return 7 },
+         set () {}
       })).toBe(true)
       expect(Specification.AbstractOperations.IsAccessorDescriptor({
-         get() {return 7}
+         get () { return 7 }
       })).toBe(true)
       expect(Specification.AbstractOperations.IsAccessorDescriptor({
-         set() {}
+         set () {}
       })).toBe(true)
       expect(Specification.AbstractOperations.IsAccessorDescriptor({})).toBe(false)
-      expect(Specification.AbstractOperations.IsAccessorDescriptor({enumerable: true})).toBe(false)
+      expect(Specification.AbstractOperations.IsAccessorDescriptor({ enumerable: true })).toBe(false)
    })
 
    test('IsDataDescriptor', () => {
@@ -97,17 +97,17 @@ describe('Specification', () => {
       expect(Specification.AbstractOperations.IsDataDescriptor({})).toBe(false)
       expect(Specification.AbstractOperations.IsDataDescriptor({ enumerable: true })).toBe(false)
    })
-   
+
    test('IsGenericDescriptor', () => {
       expect(Specification.AbstractOperations.IsGenericDescriptor({
-         get() {return 7},
-         set() {}
+         get () { return 7 },
+         set () {}
       })).toBe(false)
       expect(Specification.AbstractOperations.IsGenericDescriptor({
-         get() {return 7}
+         get () { return 7 }
       })).toBe(false)
       expect(Specification.AbstractOperations.IsGenericDescriptor({
-         set() {}
+         set () {}
       })).toBe(false)
       expect(Specification.AbstractOperations.IsGenericDescriptor({
          value: 7,
