@@ -292,11 +292,13 @@ export class Dictionary extends MapProxy {
       }
    }
 
-   // Not supported???
-   delete (key: any, isRegularProperty: boolean = false): [boolean, boolean] | boolean {
+   /**
+    * @param {boolean} [isRegularProperty] - When set to true, it only returns true if both the regular property and the Map entry are successfully deleted
+    */
+   delete (key: any, isRegularProperty: boolean = false): boolean {
       if (isRegularProperty) {
          // @ts-expect-error WAIT UNTIL VERSION: 4.3
-         return [Map.prototype.delete.call(this[specialKeys.ProxyTarget], key), delete this[specialKeys.ProxyTarget][key]]
+         return Map.prototype.delete.call(this[specialKeys.ProxyTarget], key) && delete this[specialKeys.ProxyTarget][key]
       }
       // @ts-expect-error WAIT UNTIL VERSION: 4.3
       return Map.prototype.delete.call(this[specialKeys.ProxyTarget], key)
