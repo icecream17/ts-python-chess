@@ -328,22 +328,16 @@ No       Pickling
  *
  **/
 
-import { AnyCallableClass, AnyClass } from './types'
+import { AnyClass } from './types'
 
 /**
  * Makes a class callable.
+ * Supports AnyCallableClass
  */
-export function CallableClass (func: Function, cls: AnyClass): AnyCallableClass {
-   // The function's target must be both a function and a constructor
-   // thisArg can obviously be anything,
-   // argumentsList is obviously an array:
-   // https://tc39.es/ecma262/#sec-proxy-object-internal-methods-and-internal-slots-call-thisargument-argumentslist
-   // and of course, calling a function can return anything,
-   const classProxy = new Proxy(cls, {
+export function CallableClass <FuncReturn> (func: (...FuncArgs) => FuncReturn, cls: AnyClass): typeof func & typeof cls {
+   return new Proxy(cls, {
       apply (_target: typeof cls, thisArg: any, argArray: any[]) {
          return func.apply(thisArg, argArray)
       }
-   })
-   Object.setPrototypeOf(classProxy, CallableClass.prototype)
-   return classProxy as AnyCallableClass
+   }) as typeof func & typeof cls
 }
