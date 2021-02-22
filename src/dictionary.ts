@@ -118,18 +118,18 @@ const MapProxyHandler = {
          defineProperty (target, property: any, newDescriptor: PropertyDescriptor): boolean {
             const targetIsExtensible = Object.isExtensible(target)
             const currentDescriptor = Object.getOwnPropertyDescriptor(target, property)
-            const settingConfigurable = newDescriptor?.configurable ?? false
+            const settingConfigurable = newDescriptor?.configurable
             if (currentDescriptor === undefined) {
                if (!targetIsExtensible) {
                   throw TypeError('Trying to define a property on a non-extensible object')
-               } else if (!settingConfigurable) {
+               } else if (settingConfigurable === false) {
                   throw TypeError('Trying to create a non-configurable property on a property that doesn\'t exist')
                }
             } else {
                if (!Specification.AbstractOperations.IsCompatiblePropertyDescriptor(targetIsExtensible, newDescriptor, currentDescriptor)) {
                   throw TypeError('The property descriptor you gave is incompatible with the property\'s current descriptor')
                }
-               if (!settingConfigurable && currentDescriptor.configurable === true) {
+               if (settingConfigurable === false && currentDescriptor.configurable === true) {
                   throw TypeError('You can\'t make non-configurable properties configurable.')
                }
                if (Specification.AbstractOperations.IsDataDescriptor(currentDescriptor) && currentDescriptor.configurable === false && currentDescriptor.writable === true && 'writable' in newDescriptor && newDescriptor.writable === false) {
