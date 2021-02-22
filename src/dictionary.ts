@@ -283,10 +283,10 @@ export class Dictionary extends MapProxy {
 
    // TODO: isRegularProperty in the methods: clear, entries, forEach, keys, values
 
-   clear (): void {
-      for (const key of this.keys()) {
-         // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-         delete this[key]
+   clear (regularProperties: boolean = false): void {
+      for (const key of Object.getOwnPropertyNames(this)) {
+         // @ts-expect-error WAIT UNTIL VERSION: 4.3
+         this.delete(key, regularProperties)
       }
    }
 
