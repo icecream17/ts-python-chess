@@ -33,7 +33,7 @@
  *
  *
  *
- *           Creating an Enum
+ *           Creating an Enum - Also see Restricted Enum subclassing
  *
  * Enums are created using the class syntax.
  * An alternative creation method is described in Functional API.
@@ -191,41 +191,129 @@
  *
  *
  *
+ *          Comparisons
+ *
+ * Enum members are compared by identity
+ * Color.BLUE is Color.BLUE         # True
+ * Color.NAVY is not Color.BLUE     # True
+ *
+ * Ordered comparisons are not supported, with the exception of IntEnum
+ * Color.NAVY < Color.BLUE          # TypeError: '<' not supported between instances of 'Color' and 'Color'
+ *
+ * Equality comparisons are defined though
+ * Color.BLUE == Color.BLUE         # True
+ * Color.NAVY != Color.BLUE         # True
+ *
+ * Comparing against non-enum values will always compare not-equal, with the exception of IntEnum
+ * Color.BLUE == 46n                # False
  *
  *
  *
  *
  *
+ *          Allowed enum members and attributes
+ *
+ * Names that start and end with a single underscore are reserved by enum and cannot be used
+ * All other attributes defined in an enum are members of that enum except for:
+ *    special methods, like __str__()
+ *    descriptors (methods are also descriptors)
+ *    variables names listed in _ignore_
  *
  *
  *
  *
  *
+ *          Restricted Enum subclassing
+ *
+ * Enum creation syntax:
+ *    As many mix-ins as you want, up to 1 data-type, and one base-enum class.
+ *
+ * class EnumName ([...mix-in] [date-type] base-enum)
+ *
+ *
+No  Subclassing an enum is only allowed if the new enum does not define any members.
+No  class MoreColor(Color):
+No     PINK = 17
+No
+No  > TypeError: Cannot extend enums
  *
  *
  *
  *
  *
+No       Pickling
  *
  *
  *
  *
  *
+ *       Functional API
+ *
+ * The ```Enum``` class is callable
+ *
+ * EnumVariable = Enum(value='NewEnumName', names=<...>, *, type=<mixed-in class>, start=1)
+ *
+ * MemberNameSource:
+ *    Whitespace-seperated string of names,
+ *    a sequences of names,
+ *    a sequence of 2-tuples with key/value pairs,
+ *    a mapping of names to values
+ *
+ * The last two options enable assigning arbitrary keys to values,
+ * while the others auto-assign increasing integers starting with 1.
+ * (Use the ```start``` parameter to specify a different starting value)
+ *
+ * So the following two definitions are equivalent:
+ *
+ * Animal = Enum('Animal', 'ANT BEE CAT DOG')
+ *
+ * class Animal(Enum):
+ *    ANT = 1
+ *    BEE = 2
+ *    CAT = 3
+ *    DOG = 4
  *
  *
  *
  *
  *
+ *             Derived Enums
  *
+ *          1. Int Enum
  *
+ * Subclass of ```int```
+ * Int Enum members can be compared with numbers,
+ * and also other Int Enum members
  *
+ *          2. Int Flag
  *
+ * Subclass of ```int```
+ * Int Flag members can combined using the bitwise operators,
+ * and the result would still be an Int Flag member.
  *
+ * It's possible to name the combinations
  *
+ * class Color(IntFlag):
+ *    WHITE: 0       # Combo of <None>
+ *    RED: 1
+ *    BLUE: 2
+ *    PURPLE: 3      # Combo of RED and BLUE
+ *    YELLOW: 4
+ *    ORANGE: 5      # Combo of RED and YELLOW
+ *    GREEN: 6       # Combo of BLUE and YELLOW
+ *    BLACK: 7       # Combo of RED, BLUE, and YELLOW
  *
+ * If an IntFlag member has a value of 0, the boolean of that value is false:
+ * bool(Color.WHITE) # False
  *
+ * IntFlag can also be combined with ```int```:
+ * Color.BLUE | 8    # <Color.8|BLUE: 2>
  *
+ *          3. Flag
  *
+ * The last variation.
+ * Like ```IntFlag```, ```Flag``` members can be combined with bitwise operators.
+ * Unlike IntFlag, they cannot be combined with, nor compared against, any other Flag enum member, nor int
  *
  *
  *
@@ -239,3 +327,23 @@
  *
  *
  **/
+
+import { AnyCallableClass, AnyClass } from './types'
+
+/**
+ * Makes a class callable.
+ */
+export function CallableClass (func: Function, cls: AnyClass): AnyCallableClass {
+   // The function's target must be both a function and a constructor
+   // thisArg can obviously be anything,
+   // argumentsList is obviously an array:
+   // https://tc39.es/ecma262/#sec-proxy-object-internal-methods-and-internal-slots-call-thisargument-argumentslist
+   // and of course, calling a function can return anything,
+   const classProxy = new Proxy(cls, {
+      apply (_target: typeof cls, thisArg: any, argArray: any[]) {
+         return func.apply(thisArg, argArray)
+      }
+   })
+   Object.setPrototypeOf(classProxy, CallableClass.prototype)
+   return classProxy as AnyCallableClass
+}

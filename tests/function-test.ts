@@ -92,7 +92,7 @@ export function FunctionTest (
    resolves: boolean = false,
    rejects: boolean = false,
 ): void {
-   if (resolves && rejects) throw Error('Function cannot both reject and resolve')
+   if (resolves && rejects) throw RangeError('Function cannot both reject and resolve')
    without.types = without?.types ?? []
    without.values = without?.values ?? []
 

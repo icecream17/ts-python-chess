@@ -18,9 +18,35 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-// The side to move or color of a piece
+/** The side to move or color of a piece */
 export type Color = boolean
 export type PieceType = 1 | 2 | 3 | 4 | 5 | 6
+
+/**
+ * An object, but every property is allowed
+ */
+export interface AnyObject extends Object {
+   [key: string]: any
+   [key: number]: any
+   // @ts-expect-error WAIT UNTIL VERSION: 4.3
+   [key: symbol]: any
+}
+
+/**
+ * A function, but every property is allowed
+ */
+export interface AnyFunction extends AnyObject, Function {
+   (...args: any[]): any
+}
+
+/**
+ * A class, where every property is allowed
+ */
+export interface AnyClass extends AnyObject, Function {
+   new (...args: any[]): any
+}
+
+export interface AnyCallableClass extends AnyFunction, AnyClass {}
 
 // For easy copy-pasting
 export const None = null

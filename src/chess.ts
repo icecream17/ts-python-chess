@@ -33,11 +33,45 @@ import { Color, PieceType, None } from './types'
  * Syzygy tablebase probing, and XBoard/UCI engine communication.
  */
 
-export const Chess = {
-   Color: Boolean,
-   isColor (value?: unknown): boolean {
+class ColorClass extends Boolean {
+   static from (value?: any): boolean {
+      return Boolean(value)
+   }
+
+   static CorrespondingPythonClass = 'bool'
+   static [Symbol.hasInstance] (value?: unknown): boolean {
       return typeof value === 'boolean'
-   },
+   }
+}
+
+class PieceTypeClass extends Number {
+   constructor (...args: any[]) {
+      super(...args)
+
+      if (!Number.isInteger(this.valueOf())) {
+         throw RangeError('Number created must be an integer')
+      } else if (this.valueOf() < 1 || this.valueOf() > 6) {
+         console.warn(`PieceType value ${this.valueOf()} is outside of valid PieceType range`)
+      }
+   }
+
+   static from (value?: any): number {
+      return Number(new PieceTypeClass(value))
+   }
+
+   static CorrespondingPythonClass = 'int'
+   static [Symbol.hasInstance] (value?: unknown): boolean | 'outside of range' {
+      if (typeof value === 'number' && Number.isInteger(value)) {
+         return (value >= 1 && value < 7) ? true : 'outside of range'
+      } else {
+         return false
+      }
+   }
+}
+
+export const Chess = {
+   Color: ColorClass,
+   isColor: ColorClass[Symbol.hasInstance],
 
    // Really wish for shorthands
    // Interestingly enums of booleans are not allowed
@@ -46,14 +80,8 @@ export const Chess = {
    COLORS: [true, false] as Color[],
    COLOR_NAMES: ['black', 'white'],
 
-   PieceType: Number,
-   isPieceType (value?: unknown): boolean | 'outside of range' {
-      if (typeof value === 'number' && Number.isInteger(value)) {
-         return (value >= 1n && value < 7n) ? true : 'outside of range'
-      } else {
-         return false
-      }
-   },
+   PieceType: PieceTypeClass,
+   isPieceType: PieceTypeClass[Symbol.hasInstance],
 
    // I'll try out BigInt for now
    PAWN: 1 as PieceType,

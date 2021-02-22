@@ -54,31 +54,56 @@ new SomeClass instanceof SomeClass // true
 This isn't very useful.  
 I agree with ```typeof``` for primitives, and ```instanceof``` for objects.
 
-The ```chess.Color``` won't be very useful - it'll just copy the python-chess value.
+Amazingly, JavaScript allows us to override "instanceof"
+
+The ```chess``` classes, like ```chess.Color```, correspond to python classes like ```bool```.  
+And they also have a ```@@hasInstance``` method so that you can use ```instanceof```
 
 ```python
 Color = bool
 ```
 
 ```typescript
+class ColorClass extends Boolean {
+   constructor (...args: any[]) {
+      super(...args)
+      return Boolean(this)
+   }
+
+   static CorrespondingPythonClass: 'bool'
+   static [Symbol.hasInstance](value?: unknown): boolean {
+      return typeof value === 'boolean'
+   }
+}
+
 const Chess = {
-   Color: Boolean
+   Color: ColorClass
 }
 ```
 
-So I added some new "isType" functions.
+I also added some new "isType" functions, if you don't want to use ```instanceof```,  
+or in the more likely scenario that you're not reading this, but notice the functions anyway,  
+and figure out the functionality yourself.
+
+The ```isType``` functions are the same as using ```instanceof```.
 
 ```typescript
-Chess.isColor(true)  // true
-Chess.isPieceType(5) // true
+Chess.isColor(true)           // true
+Chess.isPieceType(3)          // true
+Chess.isSquare(14)            // true
+false instanceof Chess.Color  // true
+1 instanceof Chess.PieceType  // true
+59 instanceof Chess.Square    // true
 
-// NOTE: I can't use BigInt to represent 'int' in python, because of things like Array[0n]
-Chess.isSquare(10n)  // false
-Chess.isSquare(10)   // true
-Chess.isSquare(3858) // "out of range"
-                     // Becuase python-chess outputs "True".
-                     // I have to output a truthy value too.
-                     // But hopefully this is more helpful.
+// NOTE: I can't use BigInt to represent 'int' in python,
+// because in Python squares can be used as an index,
+// and in javascript, you can't use BigInt to index arrays
+Chess.isSquare(10n)           // false
+Chess.isSquare(10)            // true
+Chess.isSquare(3858)          // "out of range"
+                              // Becuase python-chess outputs "True".
+                              // I have to output a truthy value too.
+                              // But hopefully this is more helpful.
 Chess.isSquare(10.5) // false - not an integer
 Chess.isSquare(2.5)  // false
 Chess.isSquare(4)    // true
@@ -89,7 +114,6 @@ Some other notes about types:
 * ```None``` corresponds to ```null```
 * ```chess.Status is an Enum``` in python, but that's Really Really hard to implement exactly
   * Enums can't be pickled or unpickled
-
 
 ### Developer notes
 

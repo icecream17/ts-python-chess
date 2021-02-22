@@ -46,16 +46,43 @@ describe('The corresponding constant chess values match', () => {
    })
 })
 
+describe('Chess.isType constructors work properly', () => {
+   test('Chess.Color', () => {
+      expect(Chess.Color.from(Chess.WHITE)).toBe(Chess.WHITE)
+      expect(Chess.Color.from(Chess.BLACK)).toBe(Chess.BLACK)
+      expect(Chess.Color.from('truthy')).toBe(Chess.WHITE)
+      expect(Chess.Color.from('')).toBe(Chess.BLACK)
+      expect(Chess.Color.from()).toBe(Chess.BLACK)
+   })
+
+   test('Chess.PieceType', () => {
+      const spy = jest.spyOn(console, 'warn').mockImplementation()
+
+      expect(Chess.PieceType.from(0n)).toBe(0)
+      expect(spy).toHaveBeenCalled()
+      expect(() => Chess.PieceType.from(Infinity)).toThrow(RangeError)
+      expect(() => Chess.PieceType.from('0.5')).toThrow(RangeError)
+      expect(Chess.PieceType.from('4')).toBe(4)
+      expect(spy).toHaveBeenCalledTimes(1)
+
+      spy.mockRestore()
+   })
+})
+
 describe('Chess.isType functions work properly', () => {
    test('Chess.isColor', () => {
       FunctionTest(Chess.isColor, false, { types: ['boolean'] })
 
       expect(Chess.isColor(false)).toBe(true)
       expect(Chess.isColor(true)).toBe(true)
+      // @ts-expect-error Intentional functionality
+      expect(false instanceof Chess.Color).toBe(true)
+      // @ts-expect-error Intentional functionality
+      expect(true instanceof Chess.Color).toBe(true)
    })
 
    test('Chess.isPieceType', () => {
-      FunctionTest(Chess.isColor, false, { types: ['number'] })
+      FunctionTest(Chess.isPieceType, false, { types: ['number'] })
 
       expect(Chess.isPieceType(-7)).toBe('outside of range')
       expect(Chess.isPieceType(-3)).toBe('outside of range')
