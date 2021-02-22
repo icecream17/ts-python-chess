@@ -334,7 +334,7 @@ import { AnyClass } from './types'
  * Makes a class callable.
  * Supports AnyCallableClass
  */
-export function CallableClass <FuncReturn> (func: (...FuncArgs) => FuncReturn, cls: AnyClass): typeof func & typeof cls {
+export function CallableClass <FuncReturn> (func: (...FuncArgs: any[]) => FuncReturn, cls: AnyClass): typeof func & typeof cls {
    return new Proxy(cls, {
       apply (_target: typeof cls, thisArg: any, argArray: any[]) {
          return func.apply(thisArg, argArray)
