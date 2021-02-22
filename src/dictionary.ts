@@ -1,7 +1,8 @@
 
 import { AnyObject } from './types'
 
-export const specialKeys: Readonly<{ [key: string]: symbol }> = {
+// Todo: Readonly
+export const specialKeys = {
    UnionObject: Symbol('Union object'),
    UnionClass: Symbol('Union class'),
    ClassList: Symbol('Class list'),
@@ -45,7 +46,7 @@ export function shallowCopy (value: any): any {
  * @example
  *    forceValue(board, "square", [0, []], [0, "A1"])
  */
-export function forceValue (obj: any, ...AtLeastOneKeyAndValue: Array<PropertyKey | [PropertyKey, any]>): any {
+export function forceValue (obj: any, ...AtLeastOneKeyAndValue: Array<PropertyKey | [PropertyKey, any]>): typeof obj {
    for (const KeyOrKeyAndValue of AtLeastOneKeyAndValue) {
       if (Array.isArray(KeyOrKeyAndValue) && KeyOrKeyAndValue.length === 2) {
          obj = obj[KeyOrKeyAndValue[0]] ??= KeyOrKeyAndValue[1]
@@ -258,9 +259,12 @@ const MapProxy: MapConstructor = new Proxy(Map, MapProxyHandler)
  // If you didn't know, the property that is defined isn't the number 0, but rather the string '0'
  // Bug potential!!!
  dictionary.get(0) // undefined
- dictionary.get(String(0)) // 'Test'
 
- // I recommend
+ // To avoid this, you can convert to string:
+ dictionary.get(String(0)) // 'Test'
+ 
+ // Or use the "isRegularProperty" argument
+ dictionary.get(0, true) // 'Test'
  ```
  */
 
@@ -279,6 +283,8 @@ export class Dictionary extends MapProxy {
       return Map.prototype[Symbol.iterator].call(this[specialKeys.ProxyTarget])
    }
 
+   // TODO: isRegularProperty in the methods: clear, entries, forEach, keys, values
+
    clear (): void {
       for (const key of this.keys()) {
          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
@@ -286,7 +292,12 @@ export class Dictionary extends MapProxy {
       }
    }
 
-   delete (key: any): boolean {
+   delete (key: any): boolean;
+   delete (key: any, isRegularProperty: boolean = false): isRegularProperty is true ? [boolean, boolean] : boolean {
+      if (isRegularProperty) {
+         // @ts-expect-error WAIT UNTIL VERSION: 4.3
+         return [Map.prototype.delete.call(this[specialKeys.ProxyTarget], key), delete this[specialKeys.ProxyTarget][key]]
+      }
       // @ts-expect-error WAIT UNTIL VERSION: 4.3
       return Map.prototype.delete.call(this[specialKeys.ProxyTarget], key)
    }
@@ -301,14 +312,30 @@ export class Dictionary extends MapProxy {
       return Map.prototype.forEach.call(this[specialKeys.ProxyTarget])
    }
 
-   get (key: any): any | undefined {
+   /**
+    * Gets a property value
+    * @param {any} key - The property key
+    * @param {boolean} [isRegularProperty] - If the regular property exists return that instead
+    */
+   get (key: any, isRegularProperty: boolean = false): any | undefined {
       // @ts-expect-error WAIT UNTIL VERSION: 4.3
-      return Map.prototype.get.call(this[specialKeys.ProxyTarget], key)
+      if (isRegularProperty && key in this[specialKeys.ProxyTarget]) {
+         // @ts-expect-error WAIT UNTIL VERSION: 4.3
+         return this[specialKeys.ProxyTarget][key]
+      // @ts-expect-error WAIT UNTIL VERSION: 4.3
+      } else if (Map.prototype.has.call(this[specialKeys.ProxyTarget], key)) {
+         // @ts-expect-error WAIT UNTIL VERSION: 4.3
+         return Map.prototype.get.call(this[specialKeys.ProxyTarget], key)
+      }
    }
 
-   has (key: any): boolean {
-      // @ts-expect-error WAIT UNTIL VERSION: 4.3
-      return Map.prototype.has.call(this[specialKeys.ProxyTarget], key)
+   has (key: any, isRegularProperty: boolean = false): boolean {
+      return (
+         // @ts-expect-error WAIT UNTIL VERSION: 4.3
+         Map.prototype.has.call(this[specialKeys.ProxyTarget], key) ||
+         // @ts-expect-error WAIT UNTIL VERSION: 4.3
+         (key in this[specialKeys.ProxyTarget] && isRegularProperty)
+      )
    }
 
    keys (): IterableIterator<any> {
@@ -329,11 +356,15 @@ export class Dictionary extends MapProxy {
     * }
     * ```
     *
-    * If you didn't know, Map.prototype.set returns ```this```
+    * If you didn't know, Map.prototype.set returns ```this```.
+    *
+    * IMPORTANT: Unlike the other functions, by default isRegularProperty is true
     */
-   set (key: any, value: any): this {
-      // @ts-expect-error WAIT UNTIL VERSION: 4.3
-      this[specialKeys.ProxyTarget][key] = value
+   set (key: any, value: any, isRegularProperty: boolean = true): this {
+      if (isRegularProperty) {
+         // @ts-expect-error WAIT UNTIL VERSION: 4.3
+         this[specialKeys.ProxyTarget][key] = value
+      }
       // @ts-expect-error WAIT UNTIL VERSION: 4.3
       Map.prototype.set.call(this[specialKeys.ProxyTarget], key, value)
       return this
