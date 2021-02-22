@@ -43,7 +43,7 @@ describe('Dictionary', () => {
       expect(testDictionary.has(1)).toBe(false)
    })
 
-   test('Proxy handlers' () => {
+   test('Proxy handlers', () => {
       expect(() => {
          Reflect.defineProperty(testDictionary, 'NonExistentProperty', { configurable: false })
       }).toThrow(TypeError)
