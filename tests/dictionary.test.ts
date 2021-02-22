@@ -259,6 +259,7 @@ describe('Specification', () => {
             value: 0
          }
       )).toBe(false)
+      // Some more && short-circuiting
       expect(Specification.AbstractOperations.IsCompatiblePropertyDescriptor(
          false,
          {
@@ -271,7 +272,20 @@ describe('Specification', () => {
             get: Number,
             set: Number
          }
-      )).toBe(false)
+      )).toBe(true)
+      expect(Specification.AbstractOperations.IsCompatiblePropertyDescriptor(
+         false,
+         {
+            enumerable: true,
+            set: Number
+         },
+         {
+            configurable: false,
+            enumerable: true,
+            get: Number,
+            set: Number
+         }
+      )).toBe(true)
       expect(Specification.AbstractOperations.IsCompatiblePropertyDescriptor(
          false,
          {
@@ -286,5 +300,33 @@ describe('Specification', () => {
             set: Number
          }
       )).toBe(true)
+      expect(Specification.AbstractOperations.IsCompatiblePropertyDescriptor(
+         false,
+         {
+            enumerable: true,
+            get: Number,
+            set: Object
+         },
+         {
+            configurable: false,
+            enumerable: true,
+            get: Number,
+            set: Number
+         }
+      )).toBe(false)
+      expect(Specification.AbstractOperations.IsCompatiblePropertyDescriptor(
+         false,
+         {
+            enumerable: true,
+            get: Number,
+            set: Object
+         },
+         {
+            configurable: false,
+            enumerable: true,
+            get: Object,
+            set: Number
+         }
+      )).toBe(false)
    })
 })
