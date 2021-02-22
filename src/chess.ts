@@ -33,15 +33,24 @@ import { Color, PieceType, None } from './types'
  * Syzygy tablebase probing, and XBoard/UCI engine communication.
  */
 
+/**
+ * Instead of using the constructor, use the ColorClass.from() method instead
+ * true instanceof ColorClass === true
+ * false instanceof ColorClass === true
+ * Everything else, even Object(Boolean), instanceof Color === false
+ */
 class ColorClass extends Boolean {
    static from (value?: any): boolean {
       return Boolean(value)
    }
 
-   static CorrespondingPythonClass = 'bool'
    static [Symbol.hasInstance] (value?: unknown): boolean {
       return typeof value === 'boolean'
    }
+
+   static readonly CorrespondingPythonClass = 'bool'
+   static readonly WHITE: Color = true
+   static readonly BLACK: Color = false
 }
 
 class PieceTypeClass extends Number {
@@ -59,7 +68,6 @@ class PieceTypeClass extends Number {
       return Number(new PieceTypeClass(value))
    }
 
-   static CorrespondingPythonClass = 'int'
    static [Symbol.hasInstance] (value?: unknown): boolean | 'outside of range' {
       if (typeof value === 'number' && Number.isInteger(value)) {
          return (value >= 1 && value < 7) ? true : 'outside of range'
@@ -67,6 +75,15 @@ class PieceTypeClass extends Number {
          return false
       }
    }
+
+   static readonly CorrespondingPythonClass = 'int'
+   static readonly PAWN: PieceType = 1
+   static readonly KNIGHT: PieceType = 2
+   static readonly BISHOP: PieceType = 3
+   static readonly ROOK: PieceType = 4
+   static readonly QUEEN: PieceType = 5
+   static readonly KING: PieceType = 6
+   static readonly PIECE_TYPES: PieceType[] = [1, 2, 3, 4, 5, 6]
 }
 
 export const Chess = {
@@ -83,14 +100,16 @@ export const Chess = {
    PieceType: PieceTypeClass,
    isPieceType: PieceTypeClass[Symbol.hasInstance],
 
-   // I'll try out BigInt for now
+   // BigInt doesn't work
    PAWN: 1 as PieceType,
    KNIGHT: 2 as PieceType,
    BISHOP: 3 as PieceType,
    ROOK: 4 as PieceType,
    QUEEN: 5 as PieceType,
    KING: 6 as PieceType,
-   PIECE_TYPES: [1, 2, 3, 4, 5, 6] as PieceType[],
+   PIECE_TYPES: PieceTypeClass.PIECE_TYPES,
+
+   // TODO: When creating the Piece class put these arrays into that class
    PIECE_SYMBOLS: [None, 'p', 'n', 'b', 'r', 'q', 'k'] as [null, ...string[]],
    PIECE_NAMES: [None, 'pawn', 'knight', 'bishop', 'rook', 'queen', 'king'] as [null, ...string[]],
 
