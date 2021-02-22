@@ -285,7 +285,6 @@ export class Dictionary extends MapProxy {
 
    clear (regularProperties: boolean = false): void {
       for (const key of Object.getOwnPropertyNames(this)) {
-         // @ts-expect-error WAIT UNTIL VERSION: 4.3
          this.delete(key, regularProperties)
       }
    }
