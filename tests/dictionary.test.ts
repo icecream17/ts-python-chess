@@ -183,6 +183,7 @@ describe('Specification', () => {
             enumerable: true
          }
       )).toBe(true)
+      // Gotta love that && short-circuit. Wow, the specification is ridiculous!
       expect(Specification.AbstractOperations.IsCompatiblePropertyDescriptor(
          false,
          {
@@ -193,7 +194,7 @@ describe('Specification', () => {
             enumerable: true,
             value: 7
          }
-      )).toBe(false)
+      )).toBe(true)
       expect(Specification.AbstractOperations.IsCompatiblePropertyDescriptor(
          false,
          {
