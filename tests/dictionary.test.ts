@@ -43,6 +43,16 @@ describe('Dictionary', () => {
       expect(testDictionary.has(1)).toBe(false)
    })
 
+   test('Proxy handlers' () => {
+      expect(() => {
+         Reflect.defineProperty(testDictionary, 'NonExistentProperty', { configurable: false })
+      }).toThrow(TypeError)
+      expect(Reflect.defineProperty(testDictionary, 'ReflectProperty1', { configurable: true })).toBe(true)
+      expect(() => {
+         Reflect.defineProperty(testDictionary, 'ReflectProperty1', { configurable: true })
+      }).toThrow(TypeError)
+   })
+
    test('Property deletion', () => {
       delete testDictionary.property1
       expect(testDictionary?.property1).toBeUndefined()
