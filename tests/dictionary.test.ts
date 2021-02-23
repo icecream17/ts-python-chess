@@ -17,44 +17,59 @@ describe('assignAll', () => {
 describe('Dictionary', () => {
    const testDictionary = new Dictionary()
 
-   test('Property setting, getting, having', () => {
-      testDictionary.property1 = 7
-      expect(testDictionary.property1).toBe(7)
-      expect(testDictionary.get('property1')).toBe(7)
-      expect(testDictionary.has('property1')).toBe(true)
-      expect('property1' in testDictionary).toBe(true)
+   describe('Property setting, getting, having', () => {
+      test('Regular property setting', () => {
+         testDictionary.property1 = 7
+         expect(testDictionary.property1).toBe(7)
+         expect(testDictionary.get('property1')).toBe(7)
+         expect(testDictionary.has('property1')).toBe(true)
+         expect('property1' in testDictionary).toBe(true)
 
-      testDictionary[0] = specialKeys.ProxyTarget
-      expect(testDictionary[0]).toBe(specialKeys.ProxyTarget)
-      expect(testDictionary.get(0)).toBeUndefined() // Be careful! Read the documentation!
-      expect(testDictionary.get(0, true)).toBe(specialKeys.ProxyTarget)
-      expect(testDictionary.get('0')).toBe(specialKeys.ProxyTarget)
-      expect(testDictionary.has(0)).toBe(false) // Be careful! Read the documentation!
-      expect(testDictionary.has(0, true)).toBe(true)
-      expect(testDictionary.has('0')).toBe(true)
-      expect(0 in testDictionary).toBe(true)
+         testDictionary[0] = specialKeys.ProxyTarget
+         expect(testDictionary[0]).toBe(specialKeys.ProxyTarget)
+         expect(testDictionary.get(0)).toBeUndefined() // Be careful! Read the documentation!
+         expect(testDictionary.get(0, true)).toBe(specialKeys.ProxyTarget)
+         expect(testDictionary.get('0')).toBe(specialKeys.ProxyTarget)
+         expect(testDictionary.has(0)).toBe(false) // Be careful! Read the documentation!
+         expect(testDictionary.has(0, true)).toBe(true)
+         expect(testDictionary.has('0')).toBe(true)
+         expect(0 in testDictionary).toBe(true)
+      })
 
-      testDictionary.set(testDictionary, 'self')
-      // @ts-expect-error Intentional functionality
-      expect(testDictionary in testDictionary).toBe(true)
-      // @ts-expect-error Intentional functionality
-      expect(testDictionary[testDictionary]).toBe('self') // Be careful! Read the documentation!
-      expect(testDictionary.get(testDictionary)).toBe('self')
-      expect(testDictionary.has(testDictionary)).toBe(true)
+      test('Method property setting', () => {
+         testDictionary.set(testDictionary, 'self')
+         // @ts-expect-error Intentional functionality
+         expect(testDictionary in testDictionary).toBe(true)
+         // @ts-expect-error Intentional functionality
+         expect(testDictionary[testDictionary]).toBe('self') // Be careful! Read the documentation!
+         expect(testDictionary.get(testDictionary)).toBe('self')
+         expect(testDictionary.has(testDictionary)).toBe(true)
 
-      testDictionary.set(Number, 'value 2', false)
-      expect(testDictionary.has(Number)).toBe(true)
-      expect(testDictionary.get(Number)).toBe('value 2')
-      // @ts-expect-error Intentional functionality. This is false because of the way this property was set.
-      expect(Number in testDictionary).toBe(false)
-      // @ts-expect-error Intentional functionality. This is also false, because there's no match for String(Number) as a key
-      expect(testDictionary?.[Number]).toBeUndefined()
+         testDictionary.set(Number, 'value 2', false)
+         expect(testDictionary.has(Number)).toBe(true)
+         expect(testDictionary.get(Number)).toBe('value 2')
+         // @ts-expect-error Intentional functionality. This is false because of the way this property was set.
+         expect(Number in testDictionary).toBe(false)
+         // @ts-expect-error Intentional functionality. This is also false, because there's no match for String(Number) as a key
+         expect(testDictionary?.[Number]).toBeUndefined()
+      })
 
-      const values = Array.from(testDictionary.values())
-      expect(values.includes('property1')).toBe(true)
-      expect(values.includes('0')).toBe(true)
-      expect(values.includes(testDictionary)).toBe(true)
-      expect(values.includes(Number)).toBe(true)
+      // Todo: Support for regular {Keys Values Entries}
+      test('Keys', () => {
+         const keys = Array.from(testDictionary.keys())
+         expect(keys.includes('property1')).toBe(true)
+         expect(keys.includes('0')).toBe(true)
+         expect(keys.includes(testDictionary)).toBe(true)
+         expect(keys.includes(Number)).toBe(true)
+      })
+
+      test('Values', () => {
+         let values = Array.from(testDictionary.values())
+         expect(values.includes(7)).toBe(true)
+         expect(values.includes(specialKeys.ProxyTarget)).toBe(true)
+         expect(values.includes('self')).toBe(true)
+         expect(values.includes('value2')).toBe(true)
+      })  
 
       expect(testDictionary.has(1)).toBe(false)
    })
@@ -65,13 +80,14 @@ describe('Dictionary', () => {
       expect(testDictionary?.property1).toBeUndefined()
       expect(testDictionary.has('property1')).toBe(false)
 
-      testDictionary.clear()
+      testDictionary.clear(false)
       expect(testDictionary.has(testDictionary)).toBe(false)
       expect(testDictionary.has(testDictionary, true)).toBe(true) // !!!
 
       testDictionary.clear(true)
       expect(testDictionary?.[0]).toBeUndefined()
       expect(testDictionary.has(0, true)).toBe(false)
+      expect(testDictionary.has(testDictionary, true)).toBe(false) // !!!
    })
 
    test('Proxy handlers', () => {
