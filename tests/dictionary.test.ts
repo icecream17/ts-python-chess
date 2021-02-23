@@ -47,8 +47,8 @@ describe('Dictionary', () => {
       expect(testDictionary.get(Number)).toBe('value 2')
       // @ts-expect-error Intentional functionality. This is false because of the way this property was set.
       expect(Number in testDictionary).toBe(false)
-      // @ts-expect-error Intentional functionality. This gets the right value because (get) always works
-      expect(testDictionary[Number]).toBe('value 2') // Still works!
+      // @ts-expect-error Intentional functionality. This is also false, because there's no match for String(Number) as a key
+      expect(testDictionary?.[Number]).toBeUndefined()
 
       const values = Array.from(testDictionary.values())
       expect(values.includes('property1')).toBe(true)
