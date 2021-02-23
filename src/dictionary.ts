@@ -345,6 +345,21 @@ export class Dictionary extends MapProxy {
     * IMPORTANT: Unlike the other functions, by default isRegularProperty is true
     * IMPORTANT: If you set this to false, then ONLY the Map.delete is called
     * That means that any properties will stay!
+    *
+    * @example
+    * ```
+    * dict.apples = 2
+    * dict.clear()
+    * dict.has(apples) // false
+    *
+    * dict.oranges = 3
+    * // When regularProperties = false
+    * // Map (oranges => 3), oranges: 3
+    * // turns into
+    * // Map (empty), oranges: 3
+    *
+    * // So you probably don't want to do that!
+    * ```
     */
    clear (regularProperties: boolean = true): void {
       for (let key of this.keys()) {
