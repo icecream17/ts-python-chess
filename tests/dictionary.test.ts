@@ -103,11 +103,13 @@ describe('Dictionary', () => {
 
       // @ts-expect-error WAIT UNTIL VERSION: 4.3
       Reflect.defineProperty(testDictionary[specialKeys.ProxyTarget], 'ReflectProperty2', { configurable: false })
-      // @ts-expect-error WAIT UNTIL VERSION: 4.3
-      testDictionary[specialKeys.ProxyTarget].set('ReflectProperty2', 'non-configurable property value')
+      expect(() => {
+         // @ts-expect-error WAIT UNTIL VERSION: 4.3
+         testDictionary[specialKeys.ProxyTarget].set('ReflectProperty2', 'non-configurable property value')
+      }).toThrow(TypeError)
       expect(testDictionary.ReflectProperty2).toBeUndefined()
       // @ts-expect-error WAIT UNTIL VERSION: 4.3
-      expect(testDictionary[specialKeys.ActualPropertyValue].ReflectProperty2).toBe('non-configurable property value')
+      expect('ReflectProperty2' in testDictionary[specialKeys.ActualPropertyValue]).toBe(true)
 
       Object.freeze(testDictionary)
       expect(() => {
