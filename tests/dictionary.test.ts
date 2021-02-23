@@ -80,14 +80,15 @@ describe('Dictionary', () => {
       expect(testDictionary?.property1).toBeUndefined()
       expect(testDictionary.has('property1')).toBe(false)
 
-      testDictionary.clear(false)
-      expect(testDictionary.has(testDictionary)).toBe(false)
-      expect(testDictionary.has(testDictionary, true)).toBe(true) // !!!
-
       testDictionary.clear(true)
       expect(testDictionary?.[0]).toBeUndefined()
       expect(testDictionary.has(0, true)).toBe(false)
       expect(testDictionary.has(testDictionary, true)).toBe(false) // !!!
+
+      testDictionary[0] = 123
+      testDictionary.clear(false) // Don't use false unless you're really sure
+      expect(testDictionary[0]).toBe(123)
+      expect(testDictionary.get(0, false)).toBeUndefined()
    })
 
    test('Proxy handlers', () => {
