@@ -45,8 +45,8 @@ describe('Dictionary', () => {
       testDictionary.set(Number, 'value 2', false)
       expect(testDictionary.has(Number)).toBe(true)
       expect(testDictionary.get(Number)).toBe('value 2')
-      // @ts-expect-error Intentional functionality
-      expect(Number in testDictionary).toBe(true)
+      // @ts-expect-error Intentional functionality. This is false because of the way this property was set.
+      expect(Number in testDictionary).toBe(false)
       // @ts-expect-error Intentional functionality
       expect(testDictionary[Number]).toBe('value 2') // Still works!
 
