@@ -68,7 +68,7 @@ describe('Dictionary', () => {
          expect(values.includes(7)).toBe(true)
          expect(values.includes(specialKeys.ProxyTarget)).toBe(true)
          expect(values.includes('self')).toBe(true)
-         expect(values.includes('value2')).toBe(true)
+         expect(values.includes('value 2')).toBe(true)
       })  
 
       expect(testDictionary.has(1)).toBe(false)
