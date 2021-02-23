@@ -28,6 +28,15 @@ describe('FunctionTest', () => {
    test('The ```not``` argument', () => {
       expect(() => {
          FunctionTest(() => true, false, undefined, undefined, undefined, true)
-      }).not.toThrow(ReferenceError)
+      }).not.toThrow()
+   })
+
+   test('console.warn', () => {
+      const spy = jest.spyOn(console, 'warn').mockImplementation()
+
+      FunctionTest(async () => true, true, { types: ['apple'] }, undefined, undefined, undefined, true)
+      expect(spy).toHaveBeenCalled()
+
+      spy.mockRestore()
    })
 })
