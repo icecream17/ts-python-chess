@@ -340,8 +340,10 @@ export class Dictionary extends MapProxy {
     * IMPORTANT: Unlike the other functions, by default isRegularProperty is true
     */
    clear (regularProperties: boolean = true): void {
-      for (const key of [...Object.getOwnPropertyNames(this), ...Object.getOwnPropertySymbols(this)]) {
-         this.delete(key, regularProperties)
+      if (regularProperties) {
+         for (const key of [...Object.getOwnPropertyNames(this), ...Object.getOwnPropertySymbols(this)]) {
+            this.delete(key, regularProperties)
+         }
       }
       // @ts-expect-error WAIT UNTIL VERSION: 4.3
       Map.prototype.clear.call(this[specialKeys.ProxyTarget])
