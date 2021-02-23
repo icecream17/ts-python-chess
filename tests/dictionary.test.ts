@@ -95,9 +95,23 @@ describe('Dictionary', () => {
       expect(() => {
          Reflect.defineProperty(testDictionary, 'NonExistentProperty', { configurable: false })
       }).toThrow(TypeError)
+
       expect(Reflect.defineProperty(testDictionary, 'ReflectProperty1', { configurable: true })).toBe(true)
       expect(() => {
          Reflect.defineProperty(testDictionary, 'ReflectProperty1', { configurable: false })
+      }).toThrow(TypeError)
+
+      // @ts-expect-error WAIT UNTIL VERSION: 4.3
+      Reflect.defineProperty(testDictionary[specialKeys.ProxyTarget], 'ReflectProperty2', { configurable: false }))
+      // @ts-expect-error WAIT UNTIL VERSION: 4.3
+      testDictionary[specialKeys.ProxyTarget].set('ReflectProperty2', 'non-configurable property value')
+      expect(testDictionary.ReflectProperty2).toBeUndefined()
+      // @ts-expect-error WAIT UNTIL VERSION: 4.3
+      expect(testDictionary[specialKeys.ActualPropertyValue].ReflectProperty2).toBe('non-configurable property value')
+
+      Object.freeze(testDictionary)
+      expect(() => {
+         testDictionary.property = "Not set"
       }).toThrow(TypeError)
    })
 })
