@@ -200,7 +200,12 @@ const MapProxyHandler = {
       // the ProxyHandler set() method is called, which calls the innerMap.set(), which throws an undefined error.
 
       // To avoid calling innerMap.set(), I use here innerMap instead of MapInstanceProxy.
-      innerMap[specialKeys.ProxyTarget] = innerMap
+      Object.defineProperty(innerMap, specialKeys.ProxyTarget, {
+         configurable: false,
+         enumerable: false,
+         writable: false,
+         value: innerMap
+      })
       return MapInstanceProxy
    }
 }
@@ -340,13 +345,9 @@ export class Dictionary extends MapProxy {
     * IMPORTANT: Unlike the other functions, by default isRegularProperty is true
     */
    clear (regularProperties: boolean = true): void {
-      if (regularProperties) {
-         for (const key of [...Object.getOwnPropertyNames(this), ...Object.getOwnPropertySymbols(this)]) {
-            this.delete(key, regularProperties)
-         }
+      for (let key of this.keys()) {
+         this.delete(key, isRegularProperty)
       }
-      // @ts-expect-error WAIT UNTIL VERSION: 4.3
-      Map.prototype.clear.call(this[specialKeys.ProxyTarget])
    }
 
    /**
@@ -354,8 +355,17 @@ export class Dictionary extends MapProxy {
     */
    delete (key: any, isRegularProperty: boolean = false): boolean {
       if (isRegularProperty) {
-         // @ts-expect-error WAIT UNTIL VERSION: 4.3
-         return Map.prototype.delete.call(this[specialKeys.ProxyTarget], key) && delete this[specialKeys.ProxyTarget][key] // eslint-disable-line @typescript-eslint/no-dynamic-delete
+         // If a property can't be deleted there might be an error
+         try {
+            // @ts-expect-error WAIT UNTIL VERSION: 4.3
+            const success = delete this[specialKeys.ProxyTarget][key] // eslint-disable-line @typescript-eslint/no-dynamic-delete
+            // @ts-expect-error WAIT UNTIL VERSION: 4.3
+            return Map.prototype.delete.call(this[specialKeys.ProxyTarget], key) && success
+         } catch (_error) {
+            // @ts-expect-error WAIT UNTIL VERSION: 4.3
+            Map.prototype.delete.call(this[specialKeys.ProxyTarget], key)
+            return false
+         }
       }
       // @ts-expect-error WAIT UNTIL VERSION: 4.3
       return Map.prototype.delete.call(this[specialKeys.ProxyTarget], key)
