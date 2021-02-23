@@ -57,7 +57,7 @@ describe('Dictionary', () => {
       // Todo: Support for regular {Keys Values Entries}
       test('Keys', () => {
          const keys = Array.from(testDictionary.keys())
-         expect(keys.length).toBe(4)
+         expect(keys).toHaveLength(4)
          expect(keys).toContain('property1')
          expect(keys).toContain('0')
          expect(keys).toContain(testDictionary)
@@ -66,7 +66,7 @@ describe('Dictionary', () => {
 
       test('Values', () => {
          const values = Array.from(testDictionary.values())
-         expect(values.length).toBe(4)
+         expect(values).toHaveLength(4)
          expect(values).toContain(7)
          expect(values).toContain(specialKeys.ProxyTarget)
          expect(values).toContain('self')
