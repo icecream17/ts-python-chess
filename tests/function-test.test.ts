@@ -33,7 +33,7 @@ describe('FunctionTest', () => {
 
    test('async resolve', () => {
       expect(() => {
-         FunctionTest(async () => true, true, undefined, { types: { number: [4] } }, undefined, undefined, true)
+         FunctionTest(async () => true, true, undefined, { number: [4] }, undefined, undefined, true)
       }).not.toThrow()
    })
 })
