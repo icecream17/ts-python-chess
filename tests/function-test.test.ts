@@ -31,12 +31,9 @@ describe('FunctionTest', () => {
       }).not.toThrow()
    })
 
-   test('console.warn', () => {
-      const spy = jest.spyOn(console, 'warn').mockImplementation()
-
-      FunctionTest(async () => true, true, { types: ['apple'] }, undefined, undefined, undefined, true)
-      expect(spy).toHaveBeenCalled()
-
-      spy.mockRestore()
+   test('async resolve', () => {
+      expect(() => {
+         FunctionTest(async () => true, true, { types: { number: [4] } }, undefined, undefined, undefined, true)
+      }).not.toThrow()
    })
 })
