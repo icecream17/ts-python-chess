@@ -270,7 +270,7 @@ const MapProxy: MapConstructor = new Proxy(Map, MapProxyHandler)
  // Or use the "isRegularProperty" argument
  dictionary.get(0, true) // 'Test'
  ```
- 
+
  @example
  ```
  // Here are the call stacks for each operator
@@ -291,7 +291,7 @@ const MapProxy: MapConstructor = new Proxy(Map, MapProxyHandler)
  dictionary.has(property, true?)
  |-> return Map#has.call(dictionaryInner, property) ||
  |->        true? && property in dictionaryInner
- 
+
  dictionary.property = value
  /-> ProxyHandler.set
  |---> innerDictionary.property = value
@@ -309,18 +309,18 @@ const MapProxy: MapConstructor = new Proxy(Map, MapProxyHandler)
  delete dictionary.property
  /-> ProxyHandler.deleteProperty
  --> innerDictionary.delete(property, true)
- 
+
  dictionary.delete(property, true?)
  |-> if true? then
- |---> return delete innerDictionary[property] && 
+ |---> return delete innerDictionary[property] &&
  |--->        Map#delete.call(innerDictionary)
  |-> else
  |---> return Map#delete.call(innerDictionary)
- 
+
  dictionary.set(property, true?)
  |-> if true? then innerDictionary.property = value
  |-> Map#set.call(innerDictionary, property, value)
- 
+
  ```
  */
 
@@ -362,7 +362,7 @@ export class Dictionary extends MapProxy {
     * ```
     */
    clear (regularProperties: boolean = true): void {
-      for (let key of this.keys()) {
+      for (const key of this.keys()) {
          this.delete(key, regularProperties)
       }
    }
