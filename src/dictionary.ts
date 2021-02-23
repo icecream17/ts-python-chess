@@ -148,7 +148,7 @@ const MapProxyHandler = {
             }
 
             // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-            return delete target[property] && target.delete(property)
+            return target.delete(property, true)
          },
          get (target, property, _receiver): any {
             const descriptor = Object.getOwnPropertyDescriptor(target, property)
@@ -177,7 +177,7 @@ const MapProxyHandler = {
             }
          },
          has (target, property) {
-            return (property in target) || target.has(property)
+            return target.has(property, true)
          },
          set (target, property, value, _reciever): boolean {
             const descriptor = Object.getOwnPropertyDescriptor(target, property)
@@ -191,7 +191,8 @@ const MapProxyHandler = {
                }
             }
             target[property] = value
-            return target[property] === value && target.set(property, value)
+            Map.prototype.set.call(target, property, value)
+            return target[property] === value && Map.prototype.has.call(target, property)
          }
       })
 
@@ -264,6 +265,58 @@ const MapProxy: MapConstructor = new Proxy(Map, MapProxyHandler)
  // Or use the "isRegularProperty" argument
  dictionary.get(0, true) // 'Test'
  ```
+ 
+ @example
+ ```
+ // Here are the call stacks for each operator
+ // (Remember, non-string/symbol properties are automatically converted to strings,
+ // like with dictionary[0] or with dictionary[Number])
+
+ dictionary.property
+ /-> ProxyHandler.get
+ |---> if property in dictionaryInner
+ |---> return dictionaryInner.property
+ ----> if dictionaryInner.has(property)
+ ----> return dictionaryInner.get(property)
+
+ property in dictionary
+ /-> ProxyHandler.has
+ --> innerDictionary.has(property, true)
+
+ dictionary.has(property, true?)
+ |-> return Map#has.call(dictionaryInner, property) ||
+ |->        true? && property in dictionaryInner
+ 
+ dictionary.property = value
+ /-> ProxyHandler.set
+ |---> innerDictionary.property = value
+ |---> Map#set.call(innerDictionary, property, value)
+ |---> return Map#has.call(innerDictionary, property) &&
+ |--->        innerDictionary.property === value
+
+ dictionary.get(property, true?)
+ |-> if true?
+ |--> if property in innerDictionary
+ |---> return innerDictionary[property]
+ |-> if Map#has.call(innerDictionary, property)
+ |---> return Map#get.call(innerDictionary, property)
+
+ delete dictionary.property
+ /-> ProxyHandler.deleteProperty
+ --> innerDictionary.delete(property, true)
+ 
+ dictionary.delete(property, true?)
+ |-> if true? then
+ |---> return delete innerDictionary[property] && 
+ |--->        Map#delete.call(innerDictionary)
+ |-> else
+ |---> return Map#delete.call(innerDictionary)
+ 
+ dictionary.set(property, true?)
+ |-> if true? then innerDictionary.property = value
+ |-> Map#set.call(innerDictionary, property, value)
+ 
+ ```
  */
 
 export class Dictionary extends MapProxy {
@@ -283,10 +336,15 @@ export class Dictionary extends MapProxy {
 
    // TODO: isRegularProperty in the methods: clear, entries, forEach, keys, values
 
-   clear (regularProperties: boolean = false): void {
-      for (const key of Object.getOwnPropertyNames(this)) {
+   /**
+    * IMPORTANT: Unlike the other functions, by default isRegularProperty is true
+    */
+   clear (regularProperties: boolean = true): void {
+      for (const key of [...Object.getOwnPropertyNames(this), ...Object.getOwnPropertySymbols(this)]) {
          this.delete(key, regularProperties)
       }
+      // @ts-expect-error WAIT UNTIL VERSION: 4.3
+      Map.prototype.clear.call(this[specialKeys.ProxyTarget])
    }
 
    /**
