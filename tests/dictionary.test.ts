@@ -57,21 +57,21 @@ describe('Dictionary', () => {
       // Todo: Support for regular {Keys Values Entries}
       test('Keys', () => {
          const keys = Array.from(testDictionary.keys())
-         expect(keys.includes('property1')).toBe(true)
-         expect(keys.includes('0')).toBe(true)
-         expect(keys.includes(testDictionary)).toBe(true)
-         expect(keys.includes(Number)).toBe(true)
+         expect(keys.length).toBe(4)
+         expect(keys).toContain('property1')
+         expect(keys).toContain('0')
+         expect(keys).toContain(testDictionary)
+         expect(keys).toContain(Number)
       })
 
       test('Values', () => {
-         let values = Array.from(testDictionary.values())
-         expect(values.includes(7)).toBe(true)
-         expect(values.includes(specialKeys.ProxyTarget)).toBe(true)
-         expect(values.includes('self')).toBe(true)
-         expect(values.includes('value 2')).toBe(true)
-      })  
-
-      expect(testDictionary.has(1)).toBe(false)
+         const values = Array.from(testDictionary.values())
+         expect(values.length).toBe(4)
+         expect(values).toContain(7)
+         expect(values).toContain(specialKeys.ProxyTarget)
+         expect(values).toContain('self')
+         expect(values).toContain('value 2')
+      })
    })
 
    // Depends on previous test: Property setting and getting
