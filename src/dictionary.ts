@@ -346,7 +346,7 @@ export class Dictionary extends MapProxy {
     */
    clear (regularProperties: boolean = true): void {
       for (let key of this.keys()) {
-         this.delete(key, isRegularProperty)
+         this.delete(key, regularProperties)
       }
    }
 
