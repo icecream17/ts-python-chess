@@ -163,7 +163,7 @@ const MapProxyHandler = {
                Specification.AbstractOperations.IsAccessorDescriptor(descriptor) &&
                descriptor.get === undefined
             ) {
-               if (target.has(property) as boolean) {
+               if (target.has(property, true) as boolean) {
                   forceValue(target, [specialKeys.ActualPropertyValue, {}], [property, target.get(property)])
                }
                return undefined
@@ -172,7 +172,7 @@ const MapProxyHandler = {
             if (property in target) {
                return target[property]
             }
-            if (target.has(property) as boolean) {
+            if (target.has(property, true) as boolean) {
                return target.get(property)
             }
          },

@@ -101,19 +101,32 @@ describe('Dictionary', () => {
          Reflect.defineProperty(testDictionary, 'ReflectProperty1', { configurable: false })
       }).toThrow(TypeError)
 
-      // @ts-expect-error WAIT UNTIL VERSION: 4.3
-      Reflect.defineProperty(testDictionary[specialKeys.ProxyTarget], 'ReflectProperty2', { configurable: false })
+      const CustomError = new ReferenceError('Cannot set this value')
+      Reflect.defineProperty(
+         // @ts-expect-error WAIT UNTIL VERSION: 4.3
+         testDictionary[specialKeys.ProxyTarget],
+         'ReflectProperty2',
+         // eslint-disable-next-line accessor-pairs
+         {
+            configurable: false,
+            set () {
+               // This set method only exists so that this is an accessor descriptor
+               throw CustomError
+            }
+         }
+      )
       expect(() => {
          // @ts-expect-error WAIT UNTIL VERSION: 4.3
          testDictionary[specialKeys.ProxyTarget].set('ReflectProperty2', 'non-configurable property value')
-      }).toThrow(TypeError)
+      }).toThrow(CustomError)
       expect(testDictionary.ReflectProperty2).toBeUndefined()
       // @ts-expect-error WAIT UNTIL VERSION: 4.3
       expect('ReflectProperty2' in testDictionary[specialKeys.ActualPropertyValue]).toBe(true)
 
-      Object.freeze(testDictionary)
+      // @ts-expect-error WAIT UNTIL VERSION: 4.3
+      Object.freeze(testDictionary[specialKeys.ProxyTarget])
       expect(() => {
-         testDictionary.property = "Not set"
+         testDictionary.word = 'Cannot set property'
       }).toThrow(TypeError)
    })
 })
