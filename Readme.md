@@ -95,7 +95,9 @@ false instanceof Chess.Color  // true
 1 instanceof Chess.PieceType  // true
 59 instanceof Chess.Square    // true
 
-// NOTE: I'm not using BigInt to represent 'int' in python
+// NOTE: I can't use BigInt to represent 'int' in python,
+// because in Python squares can be used as an index,
+// and in javascript, you can't use BigInt to index arrays
 Chess.isSquare(10n)           // false
 Chess.isSquare(10)            // true
 Chess.isSquare(3858)          // "out of range"
