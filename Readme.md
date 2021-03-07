@@ -95,9 +95,7 @@ false instanceof Chess.Color  // true
 1 instanceof Chess.PieceType  // true
 59 instanceof Chess.Square    // true
 
-// NOTE: I can't use BigInt to represent 'int' in python,
-// because in Python squares can be used as an index,
-// and in javascript, you can't use BigInt to index arrays
+// NOTE: I'm not using BigInt to represent 'int' in python
 Chess.isSquare(10n)           // false
 Chess.isSquare(10)            // true
 Chess.isSquare(3858)          // "out of range"
@@ -113,7 +111,9 @@ Some other notes about types:
 
 * ```None``` corresponds to ```null```
 * ```chess.Status is an Enum``` in python, but that's Really Really hard to implement exactly
-  * Enums can't be pickled or unpickled
+  * In python is IntFlag Enum subclasses both Int and Enum.
+  * And the prototype chain makes that impossible without modifying Number.
+  * Enums can't be pickled or unpickled - doesn't make sense here
 
 ### Developer notes
 
