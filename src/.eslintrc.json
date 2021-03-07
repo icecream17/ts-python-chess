@@ -24,6 +24,15 @@
          "warn",
          3
       ],
+      "@typescript-eslint/restrict-template-expressions": [
+         "error",
+         {
+            "allowNumber": true,
+            "allowBoolean": true,
+            "allowAny": true,
+            "allowNullish": true
+         }
+      ],
 
       "comma-dangle": [
          "error",

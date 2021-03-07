@@ -22,6 +22,8 @@
 /*  never gonna turn around, and, desert you.             */
 
 import { Color, PieceType, None } from './types'
+import { ColorClass, PieceTypeClass } from './classtypes'
+import { IntFlagEnum } from './enums'
 
 /**
  * @fileoverview
@@ -32,59 +34,6 @@ import { Color, PieceType, None } from './types'
  * Gaviota tablebase probing,
  * Syzygy tablebase probing, and XBoard/UCI engine communication.
  */
-
-/**
- * Instead of using the constructor, use the ColorClass.from() method instead
- * true instanceof ColorClass === true
- * false instanceof ColorClass === true
- * Everything else, even Object(Boolean), instanceof Color === false
- */
-class ColorClass extends Boolean {
-   static from (value?: any): boolean {
-      return Boolean(value)
-   }
-
-   static [Symbol.hasInstance] (value?: unknown): value is boolean {
-      return typeof value === 'boolean'
-   }
-
-   static readonly CorrespondingPythonClass = 'bool'
-   static readonly WHITE: Color = true
-   static readonly BLACK: Color = false
-}
-
-class PieceTypeClass extends Number {
-   constructor (...args: any[]) {
-      super(...args)
-
-      if (!Number.isInteger(this.valueOf())) {
-         throw RangeError('Number created must be an integer')
-      } else if (this.valueOf() < 1 || this.valueOf() > 6) {
-         console.warn(`PieceType value ${this.valueOf()} is outside of valid PieceType range`)
-      }
-   }
-
-   static from (value?: any): number {
-      return Number(new PieceTypeClass(value))
-   }
-
-   static [Symbol.hasInstance] (value?: unknown): boolean | 'outside of range' {
-      if (typeof value === 'number' && Number.isInteger(value)) {
-         return (value >= 1 && value < 7) ? true : 'outside of range'
-      } else {
-         return false
-      }
-   }
-
-   static readonly CorrespondingPythonClass = 'int'
-   static readonly PAWN: PieceType = 1
-   static readonly KNIGHT: PieceType = 2
-   static readonly BISHOP: PieceType = 3
-   static readonly ROOK: PieceType = 4
-   static readonly QUEEN: PieceType = 5
-   static readonly KING: PieceType = 6
-   static readonly PIECE_TYPES: PieceType[] = [1, 2, 3, 4, 5, 6]
-}
 
 export const Chess = {
    Color: ColorClass,
@@ -139,24 +88,43 @@ export const Chess = {
    /** The board part of the FEN for the standard chess starting position. */
    STARTING_BOARD_FEN: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR',
 
-   // Status: CreateIntFlagEnum('Status', {
-   //    VALID: 0,
-   //    NO_WHITE_KING: 1 << 0,
-   //    NO_BLACK_KING: 1 << 1,
-   //    TOO_MANY_KINGS: 1 << 2,
-   //    TOO_MANY_WHITE_PAWNS: 1 << 3,
-   //    TOO_MANY_BLACK_PAWNS: 1 << 4,
-   //    PAWNS_ON_BACKRANK: 1 << 5,
-   //    TOO_MANY_WHITE_PIECES: 1 << 6,
-   //    TOO_MANY_BLACK_PIECES: 1 << 7,
-   //    BAD_CASTLING_RIGHTS: 1 << 8,
-   //    INVALID_EP_SQUARE: 1 << 9,
-   //    OPPOSITE_CHECK: 1 << 10,
-   //    EMPTY: 1 << 11,
-   //    RACE_CHECK: 1 << 12,
-   //    RACE_OVER: 1 << 13,
-   //    RACE_MATERIAL: 1 << 14,
-   //    TOO_MANY_CHECKERS: 1 << 15,
-   //    IMPOSSIBLE_CHECK: 1 << 16,
-   // })
+   Status: new IntFlagEnum({
+      VALID: 0,
+      NO_WHITE_KING: 1 << 0,
+      NO_BLACK_KING: 1 << 1,
+      TOO_MANY_KINGS: 1 << 2,
+      TOO_MANY_WHITE_PAWNS: 1 << 3,
+      TOO_MANY_BLACK_PAWNS: 1 << 4,
+      PAWNS_ON_BACKRANK: 1 << 5,
+      TOO_MANY_WHITE_PIECES: 1 << 6,
+      TOO_MANY_BLACK_PIECES: 1 << 7,
+      BAD_CASTLING_RIGHTS: 1 << 8,
+      INVALID_EP_SQUARE: 1 << 9,
+      OPPOSITE_CHECK: 1 << 10,
+      EMPTY: 1 << 11,
+      RACE_CHECK: 1 << 12,
+      RACE_OVER: 1 << 13,
+      RACE_MATERIAL: 1 << 14,
+      TOO_MANY_CHECKERS: 1 << 15,
+      IMPOSSIBLE_CHECK: 1 << 16,
+   }),
+
+   STATUS_VALID: 0,
+   STATUS_NO_WHITE_KING: 1 << 0,
+   STATUS_NO_BLACK_KING: 1 << 1,
+   STATUS_TOO_MANY_KINGS: 1 << 2,
+   STATUS_TOO_MANY_WHITE_PAWNS: 1 << 3,
+   STATUS_TOO_MANY_BLACK_PAWNS: 1 << 4,
+   STATUS_PAWNS_ON_BACKRANK: 1 << 5,
+   STATUS_TOO_MANY_WHITE_PIECES: 1 << 6,
+   STATUS_TOO_MANY_BLACK_PIECES: 1 << 7,
+   STATUS_BAD_CASTLING_RIGHTS: 1 << 8,
+   STATUS_INVALID_EP_SQUARE: 1 << 9,
+   STATUS_OPPOSITE_CHECK: 1 << 10,
+   STATUS_EMPTY: 1 << 11,
+   STATUS_RACE_CHECK: 1 << 12,
+   STATUS_RACE_OVER: 1 << 13,
+   STATUS_RACE_MATERIAL: 1 << 14,
+   STATUS_TOO_MANY_CHECKERS: 1 << 15,
+   STATUS_IMPOSSIBLE_CHECK: 1 << 16,
 }
