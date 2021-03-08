@@ -21,13 +21,13 @@
 /*  Never gonna give you up, never gonna let you down,    */
 /*  never gonna turn around, and, desert you.             */
 
-import { Color, PieceType, None } from './types'
-import { ColorClass, PieceTypeClass } from './classtypes'
-import { IntFlagEnum } from './enums'
+import { ColorPart } from './parts/colors'
+import { PiecePart } from './parts/pieces'
+import { BoardPart } from './parts/board'
 
 /**
  * @fileoverview
- * Corresponds to __init__ from the python chess library
+ * Corresponds to the __init__ file from the python chess library
  *
  * A chess library with move generation and validation,
  * Polyglot opening book probing, PGN reading and writing,
@@ -35,96 +35,4 @@ import { IntFlagEnum } from './enums'
  * Syzygy tablebase probing, and XBoard/UCI engine communication.
  */
 
-export const Chess = {
-   Color: ColorClass,
-   isColor: ColorClass[Symbol.hasInstance],
-
-   // Really wish for shorthands
-   // Interestingly enums of booleans are not allowed
-   WHITE: true as Color,
-   BLACK: false as Color,
-   COLORS: [true, false] as Color[],
-   COLOR_NAMES: ['black', 'white'],
-
-   PieceType: PieceTypeClass,
-   isPieceType: PieceTypeClass[Symbol.hasInstance],
-
-   // BigInt doesn't work
-   PAWN: 1 as PieceType,
-   KNIGHT: 2 as PieceType,
-   BISHOP: 3 as PieceType,
-   ROOK: 4 as PieceType,
-   QUEEN: 5 as PieceType,
-   KING: 6 as PieceType,
-   PIECE_TYPES: PieceTypeClass.PIECE_TYPES,
-
-   // TODO: When creating the Piece class put these arrays into that class
-   PIECE_SYMBOLS: [None, 'p', 'n', 'b', 'r', 'q', 'k'] as [null, ...string[]],
-   PIECE_NAMES: [None, 'pawn', 'knight', 'bishop', 'rook', 'queen', 'king'] as [null, ...string[]],
-
-   /** Gets the piece letter for a piece */
-   piece_symbol (pieceType: PieceType): string {
-      return Chess.PIECE_SYMBOLS[pieceType]
-   },
-
-   piece_name (pieceType: PieceType): string {
-      return Chess.PIECE_NAMES[pieceType]
-   },
-
-   UNICODE_PIECE_SYMBOLS: {
-      R: '♖', r: '♜',
-      N: '♘', n: '♞',
-      B: '♗', b: '♝',
-      Q: '♕', q: '♛',
-      K: '♔', k: '♚',
-      P: '♙', p: '♟',
-   },
-   FILE_NAMES: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
-   RANK_NAMES: ['1', '2', '3', '4', '5', '6', '7', '8'],
-
-   /** The FEN for the standard chess starting position. */
-   STARTING_FEN: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-
-   /** The board part of the FEN for the standard chess starting position. */
-   STARTING_BOARD_FEN: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR',
-
-   Status: new IntFlagEnum({
-      VALID: 0,
-      NO_WHITE_KING: 1 << 0,
-      NO_BLACK_KING: 1 << 1,
-      TOO_MANY_KINGS: 1 << 2,
-      TOO_MANY_WHITE_PAWNS: 1 << 3,
-      TOO_MANY_BLACK_PAWNS: 1 << 4,
-      PAWNS_ON_BACKRANK: 1 << 5,
-      TOO_MANY_WHITE_PIECES: 1 << 6,
-      TOO_MANY_BLACK_PIECES: 1 << 7,
-      BAD_CASTLING_RIGHTS: 1 << 8,
-      INVALID_EP_SQUARE: 1 << 9,
-      OPPOSITE_CHECK: 1 << 10,
-      EMPTY: 1 << 11,
-      RACE_CHECK: 1 << 12,
-      RACE_OVER: 1 << 13,
-      RACE_MATERIAL: 1 << 14,
-      TOO_MANY_CHECKERS: 1 << 15,
-      IMPOSSIBLE_CHECK: 1 << 16,
-   }),
-
-   STATUS_VALID: 0,
-   STATUS_NO_WHITE_KING: 1 << 0,
-   STATUS_NO_BLACK_KING: 1 << 1,
-   STATUS_TOO_MANY_KINGS: 1 << 2,
-   STATUS_TOO_MANY_WHITE_PAWNS: 1 << 3,
-   STATUS_TOO_MANY_BLACK_PAWNS: 1 << 4,
-   STATUS_PAWNS_ON_BACKRANK: 1 << 5,
-   STATUS_TOO_MANY_WHITE_PIECES: 1 << 6,
-   STATUS_TOO_MANY_BLACK_PIECES: 1 << 7,
-   STATUS_BAD_CASTLING_RIGHTS: 1 << 8,
-   STATUS_INVALID_EP_SQUARE: 1 << 9,
-   STATUS_OPPOSITE_CHECK: 1 << 10,
-   STATUS_EMPTY: 1 << 11,
-   STATUS_RACE_CHECK: 1 << 12,
-   STATUS_RACE_OVER: 1 << 13,
-   STATUS_RACE_MATERIAL: 1 << 14,
-   STATUS_TOO_MANY_CHECKERS: 1 << 15,
-   STATUS_IMPOSSIBLE_CHECK: 1 << 16,
-}
+export const Chess = Object.assign({}, ColorPart, PiecePart, BoardPart)

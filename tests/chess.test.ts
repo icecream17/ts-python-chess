@@ -19,7 +19,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import { Chess } from '../src/chess'
-import { PieceType } from '../src/types'
+import { PieceType } from '../src/types/types'
 import { FunctionTest } from './function-test'
 
 test('It actually parses', () => {
@@ -29,8 +29,8 @@ test('It actually parses', () => {
 describe('The corresponding constant chess values match', () => {
    test('Chess.COLORS', () => {
       expect(Chess.COLORS).toEqual([
-         Chess.WHITE,
-         Chess.BLACK
+         Chess.BLACK,
+         Chess.WHITE
       ])
    })
 

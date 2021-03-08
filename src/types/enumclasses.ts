@@ -23,7 +23,7 @@ export class Enum {
    }
 }
 
-export class IntFlagEnum extends Enum {
+export class IntFlagEnum extends Enum implements Record<number | any, any> {
    #keys: any[] = []
    #values: any[] = []
    #values2keys: AnyObject = {}

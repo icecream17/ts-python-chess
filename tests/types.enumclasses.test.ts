@@ -1,4 +1,4 @@
-import { Enum, IntFlagEnum } from '../src/enums'
+import { Enum, IntFlagEnum } from '../src/types/enumclasses'
 
 describe('Enum', () => {
    const testEnum = new Enum({
