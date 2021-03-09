@@ -61,20 +61,13 @@ export class Integer extends Number {
  */
 export function makeMinMaxIntegerClassParent (min: number, max: number) {
    return class MinMaxIntegerClassParent extends Integer {
-      static MIN = min
-      static MAX = max
+      static readonly MIN = min
+      static readonly MAX = max
 
-      static from(value?: any): ReturnType<typeof Number> {
-         return Number(
-            new (this.constructor as typeof MinMaxIntegerClassParent)(value)
-         )
-      }
-
-      static [Symbol.hasInstance](value?: Exclude<unknown, number>): boolean
-      static [Symbol.hasInstance](value?: unknown): boolean | 'outside of range' {
+      static [Symbol.hasInstance] (value?: Exclude<unknown, number>): boolean
+      static [Symbol.hasInstance] (value?: unknown): boolean | 'outside of range' {
          if (typeof value === 'number' && Number.isInteger(value)) {
-            const constructor = this.constructor as typeof MinMaxIntegerClassParent
-            return (value >= constructor.MIN && value <= constructor.MAX) ? true : 'outside of range'
+            return (value >= MinMaxIntegerClassParent.MIN && value <= MinMaxIntegerClassParent.MAX) ? true : 'outside of range'
          } else {
             return false
          }
