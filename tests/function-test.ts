@@ -93,8 +93,8 @@ export function FunctionTest (
    rejects: boolean = false,
 ): void {
    if (resolves && rejects) throw RangeError('Function cannot both reject and resolve')
-   without.types = without?.types ?? []
-   without.values = without?.values ?? []
+   without.types ??= []
+   without.values ??= []
 
    const toTest = new Map()
    toTest.set('undefined', [undefined])
