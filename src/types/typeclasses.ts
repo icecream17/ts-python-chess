@@ -17,7 +17,7 @@ export class ColorClass extends Boolean {
    }
 
    static readonly CorrespondingPythonClass = 'bool'
-   static readonly Colors: Color[] & [Color, Color] & [false, true] = [false, true]
+   static readonly Colors = [false, true] as const
    static readonly WHITE: Color & true = true
    static readonly BLACK: Color & false = false
 }
@@ -32,7 +32,8 @@ export class Integer extends Number {
       if (!Number.isInteger(this.valueOf())) {
          throw RangeError('Number created must be an integer')
       } else if ('MIN' in this.constructor && 'MAX' in this.constructor) {
-         if (this.valueOf() < (this.constructor as {MIN: number}).MIN || this.valueOf() > (this.constructor as {MAX: number}).MAX) {
+         const _constructor = this.constructor as ReturnType<typeof makeMinMaxIntegerClassParent>
+         if (this.valueOf() < _constructor.MIN || this.valueOf() > _constructor.MAX) {
             console.warn(`PieceType value ${this.valueOf()} is outside of valid PieceType range`)
          }
       }
@@ -86,7 +87,7 @@ export class PieceTypeClass extends makeMinMaxIntegerClassParent(1, 6) {
    static readonly ROOK: PieceType & 4 = 4
    static readonly QUEEN: PieceType & 5 = 5
    static readonly KING: PieceType & 6 = 6
-   static readonly PIECE_TYPES: PieceType[] & [1, 2, 3, 4, 5, 6] = [1, 2, 3, 4, 5, 6]
+   static readonly PIECE_TYPES = [1, 2, 3, 4, 5, 6] as const
 }
 
 export class SquareClass extends makeMinMaxIntegerClassParent(0, 63) {
@@ -94,7 +95,7 @@ export class SquareClass extends makeMinMaxIntegerClassParent(0, 63) {
    static readonly MAX = 63
 
    static readonly CorrespondingPythonClass = 'int'
-   static readonly Squares: Square[] & [
+   static readonly Squares = [
        0,  1,  2,  3,  4,  5,  6,  7,
        8,  9, 10, 11, 12, 13, 14, 15,
       16, 17, 18, 19, 20, 21, 22, 23,
@@ -103,17 +104,8 @@ export class SquareClass extends makeMinMaxIntegerClassParent(0, 63) {
       40, 41, 42, 43, 44, 45, 46, 47,
       48, 49, 50, 51, 52, 53, 54, 55,
       56, 57, 58, 59, 60, 61, 62, 63,
-   ] = [
-       0,  1,  2,  3,  4,  5,  6,  7,
-       8,  9, 10, 11, 12, 13, 14, 15,
-      16, 17, 18, 19, 20, 21, 22, 23,
-      24, 25, 26, 27, 28, 29, 30, 31,
-      32, 33, 34, 35, 36, 37, 38, 39,
-      40, 41, 42, 43, 44, 45, 46, 47,
-      48, 49, 50, 51, 52, 53, 54, 55,
-      56, 57, 58, 59, 60, 61, 62, 63,
-   ]
-   static readonly SquareNames: SquareName[] & [
+   ] as const
+   static readonly SquareNames = [
       'A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1',
       'A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2',
       'A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'H3',
@@ -122,16 +114,7 @@ export class SquareClass extends makeMinMaxIntegerClassParent(0, 63) {
       'A6', 'B6', 'C6', 'D6', 'E6', 'F6', 'G6', 'H6',
       'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
       'A8', 'B8', 'C8', 'D8', 'E8', 'F8', 'G8', 'H8',
-   ] = [
-      'A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1',
-      'A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2',
-      'A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'H3',
-      'A4', 'B4', 'C4', 'D4', 'E4', 'F4', 'G4', 'H4',
-      'A5', 'B5', 'C5', 'D5', 'E5', 'F5', 'G5', 'H5',
-      'A6', 'B6', 'C6', 'D6', 'E6', 'F6', 'G6', 'H6',
-      'A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7',
-      'A8', 'B8', 'C8', 'D8', 'E8', 'F8', 'G8', 'H8',
-   ]
+   ] as const
    static readonly A1: Square & 0 = 0
    static readonly B1: Square & 1 = 1
    static readonly C1: Square & 2 = 2
