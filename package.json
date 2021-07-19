@@ -36,6 +36,6 @@
    },
    "devDependencies": {
       "chalk": "^4.1.1",
-      "codecov": "^3.8.2"
+      "codecov": "^3.8.3"
    }
 }
