@@ -1,8 +1,9 @@
 {
    "name": "ts-python-chess",
-   "version": "0.1.1",
+   "version": "0.1.2",
    "description": "Yet another chess package. python-chess, but in javascript",
    "main": "src/chess.js",
+   "type": "module",
    "scripts": {
       "build": "npm install --include=dev",
       "test": "npm run test-functionality && npm run test-syntax",
