@@ -18,7 +18,7 @@
    "license": "GPL-3.0-or-later",
    "dependencies": {
       "@babel/core": "^7.16.7",
-      "@babel/preset-env": "^7.16.7",
+      "@babel/preset-env": "^7.16.8",
       "@babel/preset-typescript": "^7.16.7",
       "@types/jest": "^27.4.0",
       "@typescript-eslint/eslint-plugin": "^4.33.0",
