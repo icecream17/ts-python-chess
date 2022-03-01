@@ -3,5 +3,9 @@
     ":automergeMinor",
     "config:base"
   ],
-  "rangeStrategy": "update-lockfile"
+  "rangeStrategy": "update-lockfile",
+  "packageRules": [{
+    "matchPackagePatterns": ["eslint"],
+    "groupName": "eslint"
+  }]
 }
