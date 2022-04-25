@@ -21,9 +21,10 @@
 /*  Never gonna give you up, never gonna let you down,    */
 /*  never gonna turn around, and, desert you.             */
 
-import { ColorPart } from './parts/colors'
-import { PiecePart } from './parts/pieces'
-import { BoardPart } from './parts/board'
+import { _EnPassantSpec } from "./types/types"
+import { ColorPart } from "./parts/colors"
+import { PiecePart } from "./parts/pieces"
+import { BoardPart } from "./parts/board"
 
 /**
  * @fileoverview
@@ -37,4 +38,5 @@ import { BoardPart } from './parts/board'
  * Syzygy tablebase probing, and XBoard/UCI engine communication.
  */
 
+export _EnPassantSpec
 export const Chess = Object.assign({}, ColorPart, PiecePart, BoardPart)
