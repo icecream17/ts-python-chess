@@ -21,11 +21,6 @@
 /*  Never gonna give you up, never gonna let you down,    */
 /*  never gonna turn around, and, desert you.             */
 
-import { _EnPassantSpec } from "./types/types"
-import { ColorPart } from "./parts/colors"
-import { PiecePart } from "./parts/pieces"
-import { BoardPart } from "./parts/board"
-
 /**
  * @fileoverview
  * Corresponds to the __init__ file from the python chess library
@@ -38,5 +33,17 @@ import { BoardPart } from "./parts/board"
  * Syzygy tablebase probing, and XBoard/UCI engine communication.
  */
 
-export _EnPassantSpec
-export const Chess = Object.assign({}, ColorPart, PiecePart, BoardPart)
+import { _EnPassantSpec, None } from "./types/types"
+
+export { Color } from "./types/types"
+export const [WHITE, BLACK] = [true, false] as const
+export const COLORS = [WHITE, BLACK] as const
+
+export { PieceType } from "./types/types"
+export const [PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING] = [1, 2, 3, 4, 5, 6] as const
+export const PIECE_TYPES = [PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING] as const
+export const PIECE_SYMBOLS = [None, "p", "n", "b", "r", "q", "k"] as const
+export const PIECE_NAMES = [None, "pawn", "knight", "bishop", "rook", "queen", "king"] as const
+
+export const piece_symbol = (piece_type: PieceType) => PIECE_SYMBOLS[piece_type]
+export const piece_name = (piece_type: PieceType) => PIECE_NAMES[piece_type]
