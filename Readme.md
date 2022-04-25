@@ -7,11 +7,9 @@ I decided to make my own version of chess.js
 
 But I got lazy. So instead this is just a typescript version of [python-chess](https://github.com/niklasf/python-chess)
 
-(Now it's just called [chess](https://pypi.org/project/chess/))
-
 Which totally defeats the purpose, but oh well.
 
-TRhe resulting javascript files (expect success.js) should be implementation independent.  
+The resulting javascript files (expect success.js) should be implementation independent.  
 So it'll work in browser too. As long as your browser is recent enough.
 
 ## Usage
