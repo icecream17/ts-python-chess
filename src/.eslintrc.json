@@ -38,6 +38,7 @@
          "error",
          "only-multiline"
       ],
-      "object-property-newline": "off"
+      "object-property-newline": "off",
+      "quotes": ["error", "double", { "avoidEscape": true }]
    }
 }
