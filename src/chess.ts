@@ -1,9 +1,9 @@
 // This file is
-// 1. part of the js-python-chess package.
+// 1. part of the ts-python-chess package.
 // 2. derived from the python-chess library
 //
-// Copyright (C) 2021 Steven Nguyen <icecream17.github@gmail.com>
-// Copyright (C) 2012-2021 Niklas Fiekas <niklas.fiekas@backscattering.de>
+// Copyright (C) 2022 Steven Nguyen <icecream17.github@gmail.com>
+// Copyright (C) 2012-2022 Niklas Fiekas <niklas.fiekas@backscattering.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -28,6 +28,8 @@ import { BoardPart } from './parts/board'
 /**
  * @fileoverview
  * Corresponds to the __init__ file from the python chess library
+ *
+ * https://github.com/niklasf/python-chess/blob/master/chess/__init__.py
  *
  * A chess library with move generation and validation,
  * Polyglot opening book probing, PGN reading and writing,
