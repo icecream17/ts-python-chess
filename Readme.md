@@ -5,11 +5,9 @@
 
 I decided to make my own version of chess.js
 
-But I got lazy. So instead this is just a typescript version of [python-chess](https://github.com/niklasf/python-chess)
+But I got lazy. So instead this is just a typescript port of [python-chess](https://github.com/niklasf/python-chess)
 
-Which totally defeats the purpose, but oh well.
-
-The resulting javascript files (expect success.js) should be implementation independent.  
+The resulting javascript files (expect success.js) should be implementation independent.
 So it'll work in browser too. As long as your browser is recent enough.
 
 ## Usage
@@ -18,7 +16,7 @@ So it'll work in browser too. As long as your browser is recent enough.
 
 ### Types
 
-TypeScript doesn't support types the way Python does.  
+TypeScript doesn't support types the way Python does.
 For example, in Python:
 
 ```python
@@ -49,12 +47,12 @@ Object(2) instanceof Number        // true
 new SomeClass instanceof SomeClass // true
 ```
 
-This isn't very useful.  
+This isn't very useful.
 I agree with ```typeof``` for primitives, and ```instanceof``` for objects.
 
 Amazingly, JavaScript allows us to override "instanceof"
 
-The ```chess``` classes, like ```chess.Color```, correspond to python classes like ```bool```.  
+The ```chess``` classes, like ```chess.Color```, correspond to python classes like ```bool```.
 And they also have a ```@@hasInstance``` method so that you can use ```instanceof```
 
 ```python
@@ -79,8 +77,8 @@ const Chess = {
 }
 ```
 
-I also added some new "isType" functions, if you don't want to use ```instanceof```,  
-or in the more likely scenario that you're not reading this, but notice the functions anyway,  
+I also added some new "isType" functions, if you don't want to use ```instanceof```,
+or in the more likely scenario that you're not reading this, but notice the functions anyway,
 and figure out the functionality yourself.
 
 The ```isType``` functions are the same as using ```instanceof```.

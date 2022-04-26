@@ -20,10 +20,12 @@
    "root": true,
    "rules": {
       "indent": "off",
+      "quotes": "off",
       "@typescript-eslint/indent": [
          "warn",
          3
       ],
+      "@typescript-eslint/method-signature-style": "off",
       "@typescript-eslint/restrict-template-expressions": [
          "error",
          {
@@ -33,12 +35,18 @@
             "allowNullish": true
          }
       ],
+      "@typescript-eslint/quotes": [
+         "error",
+         "double",
+         {
+            "avoidEscape": true
+         }
+      ],
 
       "comma-dangle": [
          "error",
          "only-multiline"
       ],
-      "object-property-newline": "off",
-      "quotes": ["error", "double", { "avoidEscape": true }]
+      "object-property-newline": "off"
    }
 }
