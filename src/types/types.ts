@@ -26,22 +26,23 @@ export type PieceType = 1 | 2 | 3 | 4 | 5 | 6
 export type PieceLetter = "p" | "n" | "b" | "r" | "q" | "k"
 export type PieceName = "pawn" | "knight" | "bishop" | "rook" | "queen" | "king"
 export type Square =
-    0 |  1 |  2 |  3 |  4 |  5 |  6 |  7 |
-    8 |  9 | 10 | 11 | 12 | 13 | 14 | 15 |
-   16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 |
-   24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 |
-   32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 |
-   40 | 41 | 42 | 43 | 44 | 45 | 46 | 47 |
-   48 | 49 | 50 | 51 | 52 | 53 | 54 | 55 |
-   56 | 57 | 58 | 59 | 60 | 61 | 62 | 63
+    0n |  1n |  2n |  3n |  4n |  5n |  6n |  7n |
+    8n |  9n | 10n | 11n | 12n | 13n | 14n | 15n |
+   16n | 17n | 18n | 19n | 20n | 21n | 22n | 23n |
+   24n | 25n | 26n | 27n | 28n | 29n | 30n | 31n |
+   32n | 33n | 34n | 35n | 36n | 37n | 38n | 39n |
+   40n | 41n | 42n | 43n | 44n | 45n | 46n | 47n |
+   48n | 49n | 50n | 51n | 52n | 53n | 54n | 55n |
+   56n | 57n | 58n | 59n | 60n | 61n | 62n | 63n
 
-export type LineIndex = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
-export type KingDistance = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
+export type LineIndex = 0n | 1n | 2n | 3n | 4n | 5n | 6n | 7n
+export type KingDistance = 0n | 1n | 2n | 3n | 4n | 5n | 6n | 7n
 
 export type FileName = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h"
 export type RankName = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8"
 export type SquareName = `${FileName}${RankName}`
 
+// Utils //
 
 // For easy copy-pasting
 export const None = null

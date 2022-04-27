@@ -1,3 +1,6 @@
+// Status is not used with other values
+// So there shouldn't be any different between numbers and bigints
+
 export const enum Status {
    VALID = 0,
    NO_WHITE_KING = 1 << 0,

@@ -3,3 +3,6 @@ node_modules
 .dcignore
 .gitpod.yml
 .vscode
+
+# codecov
+coverage

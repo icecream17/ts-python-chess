@@ -33,8 +33,10 @@
  * Syzygy tablebase probing, and XBoard/UCI engine communication.
  */
 
+/** Typescript hacks */
 declare global {
    interface ReadonlyArray<T> {
+      map<U>(callbackfn: (value: T, index: number, array: T[]) => U, thisArg?: any): { [K in keyof this]: U }
       includes<V>(searchElement: V, fromIndex?: number): V extends T ? boolean : false
       indexOf<V>(searchElement: V, fromIndex?: number): V extends T ? number : -1
    }
@@ -45,3 +47,4 @@ export * from "./parts/pieces"
 export * from "./parts/status"
 export * from "./parts/outcome"
 export * from "./parts/board"
+export * from "./parts/bboard"
