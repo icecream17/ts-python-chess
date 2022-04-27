@@ -2,7 +2,7 @@ import { bit_length, range8 } from "../utils/math"
 import { Square } from "../types/types"
 import { SQUARES } from "./board"
 
-/** Would be the range from 0 to 2^64 - 1 is ranges were supported */
+/** Would be the range from 0 to 2^64 - 1 if ranges were supported */
 export type Bitboard = bigint
 
 export const BB_EMPTY = 0n
