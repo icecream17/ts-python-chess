@@ -1,8 +1,11 @@
 import { bit_length, range8 } from "../utils/math"
 import { Square } from "../types/types"
-import { SQUARES } from "./board"
+import { SQUARES, square_distance, square_file, square_rank } from "./board"
 
-/** Would be the range from 0 to 2^64 - 1 if ranges were supported */
+/**
+ * Would be the range from 0 to 2^64 - 1 if ranges were supported
+ * A more specific version of python's `int` type, represented here as `bigint`.
+ */
 export type Bitboard = bigint
 
 export const BB_EMPTY = 0n
@@ -81,7 +84,7 @@ export const popcount = (bb: Bitboard) => {
 }
 
 
-export const flip_vertical = (bb: Bitboard) => {
+export const flip_vertical = (bb: Bitboard): Bitboard => {
    // https://www.chessprogramming.org/Flipping_Mirroring_and_Rotating#FlipVertically
    bb = ((bb >> 8n) & 0x00ff_00ff_00ff_00ffn) | ((bb & 0x00ff_00ff_00ff_00ffn) << 8n)
    bb = ((bb >> 16n) & 0x0000_ffff_0000_ffffn) | ((bb & 0x0000_ffff_0000_ffffn) << 16n)
@@ -120,50 +123,69 @@ export const flip_anti_diagonal = (bb: Bitboard): Bitboard => {
 }
 
 
-export const shift_down = (b: Bitboard): Bitboard => {
-   return b >> 8n
+export const shift_down = (b: Bitboard): Bitboard => b >> 8n
+
+export const shift_2_down = (b: Bitboard): Bitboard => b >> 16n
+
+export const shift_up = (b: Bitboard): Bitboard => (b << 8n) & BB_ALL
+
+export const shift_2_up = (b: Bitboard): Bitboard => (b << 16n) & BB_ALL
+
+export const shift_right = (b: Bitboard): Bitboard => (b << 1n) & ~BB_FILE_A & BB_ALL
+
+export const shift_2_right = (b: Bitboard): Bitboard => (b << 2n) & ~BB_FILE_A & ~BB_FILE_B & BB_ALL
+
+export const shift_left = (b: Bitboard): Bitboard => (b >> 1n) & ~BB_FILE_H
+
+export const shift_2_left = (b: Bitboard): Bitboard => (b >> 2n) & ~BB_FILE_G & ~BB_FILE_H
+
+export const shift_up_left = (b: Bitboard): Bitboard => (b << 7n) & ~BB_FILE_H & BB_ALL
+
+export const shift_up_right = (b: Bitboard): Bitboard => (b << 9n) & ~BB_FILE_A & BB_ALL
+
+export const shift_down_left = (b: Bitboard): Bitboard => (b >> 9n) & ~BB_FILE_H
+
+export const shift_down_right = (b: Bitboard): Bitboard => (b >> 7n) & ~BB_FILE_A
+
+
+export const _sliding_attacks = (square: Square, occupied: Bitboard, deltas: Iterable<bigint>): Bitboard => {
+   let attacks = BB_EMPTY
+
+   for (const delta of deltas) {
+      let sq = square
+
+      while (true) {
+         sq += delta
+         if (!(0 <= sq && sq < 64) || square_distance(sq, sq - delta) < 2)
+            break
+
+         attacks |= BB_SQUARES[sq]
+
+         if (occupied && BB_SQUARES[sq])
+            break
+      }
+   }
+
+   return attacks
 }
 
-export const shift_2_down = (b: Bitboard): Bitboard => {
-   return b >> 16n
-}
+export const _step_attacks = (square: Square, deltas: Iterable<bigint>): Bitboard =>
+   _sliding_attacks(square, BB_All, deltas)
 
-export const shift_up = (b: Bitboard): Bitboard => {
-   return (b << 8n) & BB_ALL
-}
+export const BB_KNIGHT_ATTACKS = SQUARES.map(sq => _step_attacks(sq, [17, 15, 10, 6, -17, -15, -10, -6]))
+export const BB_KING_ATTACKS = SQUARES.map(sq => _step_attacks(sq, [9, 8, 7, 1, -9, -8, -7, -1]))
+export const BB_PAWN_ATTACKS = [[-7, -9], [7, 9]].map(deltas => SQUARES.map(sq => _step_attacks(sq, deltas)))
 
-export const shift_2_up = (b: Bitboard): Bitboard => {
-   return (b << 16n) & BB_ALL
-}
 
-export const shift_right = (b: Bitboard): Bitboard => {
-   return (b << 1n) & ~BB_FILE_A & BB_ALL
-}
+export const _edges = (square: Square): Bitboard =>
+   (((BB_RANK_1 | BB_RANK_8) & ~BB_RANKS[square_rank(square)]) |
+   ((BB_FILE_A | BB_FILE_H) & ~BB_FILES[square_file(square)]))
 
-export const shift_2_right = (b: Bitboard): Bitboard => {
-   return (b << 2n) & ~BB_FILE_A & ~BB_FILE_B & BB_ALL
-}
-
-export const shift_left = (b: Bitboard): Bitboard => {
-   return (b >> 1n) & ~BB_FILE_H
-}
-
-export const shift_2_left = (b: Bitboard): Bitboard => {
-   return (b >> 2n) & ~BB_FILE_G & ~BB_FILE_H
-}
-
-export const shift_up_left = (b: Bitboard): Bitboard => {
-   return (b << 7n) & ~BB_FILE_H & BB_ALL
-}
-
-export const shift_up_right = (b: Bitboard): Bitboard => {
-   return (b << 9n) & ~BB_FILE_A & BB_ALL
-}
-
-export const shift_down_left = (b: Bitboard): Bitboard => {
-   return (b >> 9n) & ~BB_FILE_H
-}
-
-export const shift_down_right = (b: Bitboard): Bitboard => {
-   return (b >> 7n) & ~BB_FILE_A
+export function* _carry_rippler(mask: Bitboard): Generator<Bitboard> {
+   // Carry-Rippler trick to iterate subsets of mask
+   let subset = BB_EMPTY
+   do {
+      yield subset
+      subset = (subset - mask) & mask
+   } while (subset)
 }
