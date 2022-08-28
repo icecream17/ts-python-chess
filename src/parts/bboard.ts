@@ -156,7 +156,7 @@ export const _sliding_attacks = (square: Square, occupied: Bitboard, deltas: Ite
 
       while (true) {
          sq += delta
-         if (!(0 <= sq && sq < 64) || square_distance(sq, sq - delta) < 2)
+         if (!(0n <= sq && sq < 64n) || square_distance(sq, sq - delta) < 2n)
             break
 
          attacks |= BB_SQUARES[sq]
@@ -172,9 +172,9 @@ export const _sliding_attacks = (square: Square, occupied: Bitboard, deltas: Ite
 export const _step_attacks = (square: Square, deltas: Iterable<bigint>): Bitboard =>
    _sliding_attacks(square, BB_All, deltas)
 
-export const BB_KNIGHT_ATTACKS = SQUARES.map(sq => _step_attacks(sq, [17, 15, 10, 6, -17, -15, -10, -6]))
-export const BB_KING_ATTACKS = SQUARES.map(sq => _step_attacks(sq, [9, 8, 7, 1, -9, -8, -7, -1]))
-export const BB_PAWN_ATTACKS = [[-7, -9], [7, 9]].map(deltas => SQUARES.map(sq => _step_attacks(sq, deltas)))
+export const BB_KNIGHT_ATTACKS = SQUARES.map(sq => _step_attacks(sq, [17n, 15n, 10n, 6n, -17n, -15n, -10n, -6n]))
+export const BB_KING_ATTACKS = SQUARES.map(sq => _step_attacks(sq, [9n, 8n, 7n, 1n, -9n, -8n, -7n, -1n]))
+export const BB_PAWN_ATTACKS = [[-7n, -9n], [7n, 9n]].map(deltas => SQUARES.map(sq => _step_attacks(sq, deltas)))
 
 
 export const _edges = (square: Square): Bitboard =>
@@ -189,3 +189,61 @@ export function* _carry_rippler(mask: Bitboard): Generator<Bitboard> {
       subset = (subset - mask) & mask
    } while (subset)
 }
+
+// Simplification(?) idea:
+// Use rest parameters
+
+// Optimization idea:
+// "Allocate" all memory at once using `Array(SQUARES.length)`
+// instead of pushing the data to the array 64 times
+// (which means allocating new memory multiple times)
+export const _attack_table = (deltas: bigint[]): [Bitboard[], Record<Bitboard, Bitboard>[]] => {
+   const mask_table = []
+   const attack_table = []
+
+   for (const square of SQUARES) {
+      const attacks = {}
+
+      const mask = _sliding_attacks(square, 0n, deltas) & ~_edges(square)
+      for (const subset of _carry_rippler(mask))
+         attacks[subset] = _sliding_attacks(square, subset, deltas)
+
+      attack_table.push(attacks)
+      mask_table.push(mask)
+   }
+
+   return [mask_table, attack_table]
+}
+
+export const [BB_DIAG_MASKS, BB_DIAG_ATTACKS] = _attack_table([-9n, -7n, 7n, 9n])
+export const [BB_FILE_MASKS, BB_FILE_ATTACKS] = _attack_table([-8n, 8n])
+export const [BB_RANK_MASKS, BB_RANK_ATTACKS] = _attack_table([-1n, 1n])
+
+
+export const _rays = (): Bitboard[][] => {
+   const rays = []
+   for (const [a, bb_a] in BB_SQUARES.entries()) {
+      const rays_row = []
+      for (const [b, bb_b] in BB_SQUARES.entries())
+          if (BB_DIAG_ATTACKS[a][0] & bb_b)
+             rays_row.push((BB_DIAG_ATTACKS[a][0] & BB_DIAG_ATTACKS[b][0]) | bb_a | bb_b)
+          else if (BB_RANK_ATTACKS[a][0] & bb_b)
+             rays_row.push(BB_RANK_ATTACKS[a][0] | bb_a)
+          else if (BB_FILE_ATTACKS[a][0] & bb_b)
+             rays_row.push(BB_FILE_ATTACKS[a][0] | bb_a)
+          else
+             rays_row.push(BB_EMPTY)
+      rays.push(rays_row)
+   }
+   return rays
+}
+
+export const BB_RAYS = _rays()
+
+export const ray = (a: Square, b: Square): Bitboard => BB_RAYS[a][b]
+
+export const between = (a: Square, b: Square): Bitboard => {
+   const bb = BB_RAYS[a][b] & ((BB_ALL << a) ^ (BB_ALL << b))
+   return bb & (bb - 1)
+}
+
