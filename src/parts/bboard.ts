@@ -170,7 +170,7 @@ export const _sliding_attacks = (square: Square, occupied: Bitboard, deltas: Ite
 }
 
 export const _step_attacks = (square: Square, deltas: Iterable<bigint>): Bitboard =>
-   _sliding_attacks(square, BB_All, deltas)
+   _sliding_attacks(square, BB_ALL, deltas)
 
 export const BB_KNIGHT_ATTACKS = SQUARES.map(sq => _step_attacks(sq, [17n, 15n, 10n, 6n, -17n, -15n, -10n, -6n]))
 export const BB_KING_ATTACKS = SQUARES.map(sq => _step_attacks(sq, [9n, 8n, 7n, 1n, -9n, -8n, -7n, -1n]))
@@ -178,8 +178,8 @@ export const BB_PAWN_ATTACKS = [[-7n, -9n], [7n, 9n]].map(deltas => SQUARES.map(
 
 
 export const _edges = (square: Square): Bitboard =>
-   (((BB_RANK_1 | BB_RANK_8) & ~BB_RANKS[square_rank(square)]) |
-   ((BB_FILE_A | BB_FILE_H) & ~BB_FILES[square_file(square)]))
+   ((BB_RANK_1 | BB_RANK_8) & ~BB_RANKS[square_rank(square)]) |
+   ((BB_FILE_A | BB_FILE_H) & ~BB_FILES[square_file(square)])
 
 export function* _carry_rippler(mask: Bitboard): Generator<Bitboard> {
    // Carry-Rippler trick to iterate subsets of mask
