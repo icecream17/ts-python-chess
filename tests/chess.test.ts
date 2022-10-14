@@ -56,7 +56,7 @@ describe("Square", () => {
    })
 
    test("parse_square", () => {
-      expect(chess.parse_square("a1")).toBe(0)
+      expect(chess.parse_square("a1")).toBe(0n) // = Chess.A1
       expect(() => chess.parse_square("A1")).toThrow(ReferenceError)
       expect(() => chess.parse_square("a0")).toThrow(ReferenceError)
    })
