@@ -18,4 +18,46 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-test.todo('add tests')
+import chess from "../src/chess"
+
+describe("Square", () => {
+   test("square", () => {
+      for (const square of chess.SQUARES) {
+         const file_index = chess.square_file(square)
+         const rank_index = chess.square_rank(square)
+         expect(chess.square(file_index, rank_index)).toBe(square)
+      }
+   })
+
+   test("shifts", () => {
+      const shifts = [
+         chess.shift_down,
+         chess.shift_2_down,
+         chess.shift_up,
+         chess.shift_2_up,
+         chess.shift_right,
+         chess.shift_2_right,
+         chess.shift_left,
+         chess.shift_2_left,
+         chess.shift_up_left,
+         chess.shift_up_right,
+         chess.shift_down_left,
+         chess.shift_down_right,
+      ]
+
+      for (const shift of shifts) {
+         for (const bb_square of chess.BB_SQUARES) {
+            const shifted = shift(bb_square)
+            const c = chess.popcount(shifted)
+            expect(c).toBeLessThanOrEqual(1n)
+            expect(c).toBe(chess.popcount(shifted & chess.BB_ALL))
+         }
+      }
+   })
+
+   test("parse_square", () => {
+      expect(chess.parse_square("a1")).toBe(0)
+      expect(() => chess.parse_square("A1")).toThrow(ReferenceError)
+      expect(() => chess.parse_square("a0")).toThrow(ReferenceError)
+   })
+})

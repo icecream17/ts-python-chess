@@ -1,5 +1,5 @@
 // Status is not used with other values
-// So there shouldn't be any different between numbers and bigints
+// So there's no difference between numbers and bigints, hopefully
 
 export const enum Status {
    VALID = 0,

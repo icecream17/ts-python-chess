@@ -74,19 +74,16 @@ export const parse_square = (name: string) => {
    const index = SQUARE_NAMES.indexOf(name)
    if (index === -1) {
       const lowercase_name = name.toLowerCase()
-      let error_message = `Invalid square name: \"${name}\"!`
-      if (SQUARE_NAMES.includes(lowercase_name)) {
-         error_message += ` (Hint: convert to lowercase: ${lowercase_name})`
-      }
-      throw new ReferenceError(error_message)
+      const hint = SQUARE_NAMES.includes(lowercase_name) ? `\n\t(Hint: convert to lowercase: ${lowercase_name})` : ""
+      throw new ReferenceError(`Invalid square name: "${name}"${hint}`)
    }
-   return index as Square
+   return BigInt(index) as Square
 }
 
-/** Gets the name of the square, like `"a3"`. */ // @ts-expect-error
-export const square_name = (square: Square) => SQUARE_NAMES[square as number]
+/** Gets the name of the square, like `"a3"`. */ // @ts-expect-error -- indexes are stringified
+export const square_name = (square: Square) => SQUARE_NAMES[square]
 
-/** Gets a square number by file and rank index */
+/** Gets a square number by file and rank index */ // Optimization idea: rank_index << 3n | file_index
 export const square = (file_index: LineIndex, rank_index: LineIndex) => rank_index * 8n + file_index as Square
 
 /** Gets the file index of the square where `0` is the a-file */
