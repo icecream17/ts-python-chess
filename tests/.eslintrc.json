@@ -59,7 +59,7 @@
          {
             "selector": "typeLike",
             "format": ["PascalCase"]
-         },
+         }
       ],
       "@typescript-eslint/restrict-template-expressions": [
          "error",
