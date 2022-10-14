@@ -44,6 +44,7 @@
       ],
       "@typescript-eslint/method-signature-style": "off",
       "@typescript-eslint/naming-convention": [
+         "error",
          {
             "selector": "default",
             "format": ["snake_case"],
