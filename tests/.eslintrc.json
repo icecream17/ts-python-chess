@@ -32,10 +32,12 @@
       "jest/valid-expect": "error",
 
       "indent": "off",
+      "quotes": "off",
       "@typescript-eslint/indent": [
          "warn",
          3
       ],
+      "@typescript-eslint/method-signature-style": "off",
       "@typescript-eslint/restrict-template-expressions": [
          "error",
          {
@@ -43,6 +45,13 @@
             "allowBoolean": true,
             "allowAny": true,
             "allowNullish": true
+         }
+      ],
+      "@typescript-eslint/quotes": [
+         "error",
+         "double",
+         {
+            "avoidEscape": true
          }
       ],
 
