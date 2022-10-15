@@ -16,8 +16,10 @@ So it'll work in browser too. As long as your browser is recent enough.
 
 ### Types
 
-TypeScript doesn't support types the way Python does.
-For example, in Python:
+Python has the class `type` from which other things like `bool` and `int` subclass.
+
+This is not how it works in JavaScript. Currently my rewrite erased my solution to this problem,
+which would be a bunch of functions in one file, like `is_color`, `is_piece_type`, etc.
 
 ```python
 import chess
@@ -34,87 +36,14 @@ print(isinstance(false, chess.Color)) # True
 print(isinstance(2, chess.PieceType)) # True
 ```
 
-But even thought it's TypeScript instead of JavaScript, type checking is still kinda a mess...
+Additionally, `chess.Status` is an `IntFlag Enum`, which subclasses both `Int` and `Enum`.
 
-```typescript
-class SomeClass {}
+In JavaScript, there can only be one prototype per object, so I'd have to do something really crazy
+to implement something like this. Instead I just used TypeScript's regular `Enum`.
 
-typeof 2                           // "number"
-typeof Object(2)                   // "object"
-typeof new SomeClass               // "object"
-2 instanceof Number                // false
-Object(2) instanceof Number        // true
-new SomeClass instanceof SomeClass // true
-```
+There are again and again subtle differences between Python and JavaScript that I'm just going to
+ignore.
 
-This isn't very useful.
-I agree with ```typeof``` for primitives, and ```instanceof``` for objects.
+### License
 
-Amazingly, JavaScript allows us to override "instanceof"
-
-The ```chess``` classes, like ```chess.Color```, correspond to python classes like ```bool```.
-And they also have a ```@@hasInstance``` method so that you can use ```instanceof```
-
-```python
-Color = bool
-```
-
-```typescript
-class ColorClass extends Boolean {
-   constructor (...args: any[]) {
-      super(...args)
-      return Boolean(this)
-   }
-
-   static CorrespondingPythonClass: 'bool'
-   static [Symbol.hasInstance](value?: unknown): boolean {
-      return typeof value === 'boolean'
-   }
-}
-
-const Chess = {
-   Color: ColorClass
-}
-```
-
-I also added some new "isType" functions, if you don't want to use ```instanceof```,
-or in the more likely scenario that you're not reading this, but notice the functions anyway,
-and figure out the functionality yourself.
-
-The ```isType``` functions are the same as using ```instanceof```.
-
-```typescript
-Chess.isColor(true)           // true
-Chess.isPieceType(3)          // true
-Chess.isSquare(14)            // true
-false instanceof Chess.Color  // true
-1 instanceof Chess.PieceType  // true
-59 instanceof Chess.Square    // true
-
-// NOTE: I can't use BigInt to represent 'int' in python,
-// because in Python squares can be used as an index,
-// and in javascript, you can't use BigInt to index arrays
-Chess.isSquare(10n)           // false
-Chess.isSquare(10)            // true
-Chess.isSquare(3858)          // "out of range"
-                              // Becuase python-chess outputs "True".
-                              // I have to output a truthy value too.
-                              // But hopefully this is more helpful.
-Chess.isSquare(10.5) // false - not an integer
-Chess.isSquare(2.5)  // false
-Chess.isSquare(4)    // true
-```
-
-Some other notes about types:
-
-* ```None``` corresponds to ```null```
-* ```chess.Status is an Enum``` in python, but that's Really Really hard to implement exactly
-  * In python is IntFlag Enum subclasses both Int and Enum.
-  * And the prototype chain makes that impossible without modifying Number.
-  * Enums can't be pickled or unpickled - doesn't make sense here
-
-### Developer notes
-
-I'm just using the same license as python-chess
-
-This used to have something here about how it didn't work without a worka-round, but that's fixed.
+Should be the same as the latest version of python-chess
