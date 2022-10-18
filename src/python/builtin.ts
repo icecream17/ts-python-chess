@@ -19,6 +19,7 @@ try {
    _randomness = BigInt(globalThis.crypto.getRandomValues(big64)) // works by complete accident, gotta love js
 } catch (err) {
    if (err instanceof globalThis.TypeError) _randomness = BigInt(1928307564073802901 * Math.random())
+   else throw err
 }
 /**
  * Return the hash value for a given object
