@@ -40,12 +40,17 @@ declare global {
       includes<V>(searchElement: V, fromIndex?: number): V extends T ? boolean : false
       indexOf<V>(searchElement: V, fromIndex?: number): V extends T ? number : -1
    }
+
+   interface Array<T> {
+      indexOf<V>(searchElement: V, fromIndex?: number): V extends T ? number : -1
+   }
 }
 
 export * from "./parts/colors"
 export * from "./parts/pieces"
 export * from "./parts/status"
 export * from "./parts/outcome"
+export * from "./parts/move_errors"
 export * from "./parts/board"
 export * from "./parts/bboard"
 export * from "./parts/regexes"

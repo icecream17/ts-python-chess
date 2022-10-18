@@ -70,7 +70,7 @@ export const msb = (bb: Bitboard) => bit_length(bb) - 1n
 export function* scan_reversed(bb: Bitboard): Generator<Square> {
    while (bb) {
       const r = bit_length(bb) - 1n as Square
-      yield r // @ts-expect-error
+      yield r // @ts-expect-error -- bigint index
       bb ^= BB_SQUARES[r]
    }
 }

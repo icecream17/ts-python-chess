@@ -18,6 +18,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import { ValueError } from "../src/parts/python/builtin"
 import * as chess from "../src/chess"
 
 describe("Square", () => {
@@ -57,7 +58,7 @@ describe("Square", () => {
 
    test("parse_square", () => {
       expect(chess.parse_square("a1")).toBe(0n) // = Chess.A1
-      expect(() => chess.parse_square("A1")).toThrow(ReferenceError)
-      expect(() => chess.parse_square("a0")).toThrow(ReferenceError)
+      expect(() => chess.parse_square("A1")).toThrow(ValueError)
+      expect(() => chess.parse_square("a0")).toThrow(ValueError)
    })
 })

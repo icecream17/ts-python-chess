@@ -10,6 +10,12 @@ But I got lazy. So instead this is just a typescript port of [python-chess](http
 The resulting javascript files (expect success.js) should be implementation independent.
 So it'll work in browser too. As long as your browser is recent enough.
 
+## JS requirements
+
+- classes, all syntax
+- 2022 features, for example `.at()`
+- `console.warn`
+
 ## Usage
 
 ```npm install --save-dev js-python-chess```
@@ -41,8 +47,14 @@ Additionally, `chess.Status` is an `IntFlag Enum`, which subclasses both `Int` a
 In JavaScript, there can only be one prototype per object, so I'd have to do something really crazy
 to implement something like this. Instead I just used TypeScript's regular `Enum`.
 
-There are again and again subtle differences between Python and JavaScript that I'm just going to
-ignore.
+Other subtle differences:
+
+- `None` is `null` (internally)
+- `__str__` is `toString`
+- `__repr__` et al do not have JS equivalents, they're just stored as is
+- Both lists and tuples are represented with arrays
+- dicts are either regular objects or Maps
+- Error messages are not guaranteed to be the same but hopefully they're at least as good.
 
 ### License
 

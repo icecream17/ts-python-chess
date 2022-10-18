@@ -48,3 +48,5 @@ export type SquareName = `${FileName}${RankName}`
 export const None = null
 export type None = null
 export type Optional<T> = None | T
+
+export type NumericIndex = number | bigint | `${number | bigint}`

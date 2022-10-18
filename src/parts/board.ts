@@ -1,3 +1,4 @@
+import { ValueError } from "../python/builtin"
 import { KingDistance, LineIndex, Square } from "../types/types"
 import { abs, greater } from "../utils/math"
 
@@ -68,19 +69,19 @@ export const SQUARE_NAMES = [
  * ```ts
  * parse_square("a1") // 0
  * ```
- * @throws {ReferenceError} if the square name is invalid
+ * @throws {ValueError} if the square name is invalid
  */
 export const parse_square = (name: string) => {
    const index = SQUARE_NAMES.indexOf(name)
    if (index === -1) {
       const lowercase_name = name.toLowerCase()
       const hint = SQUARE_NAMES.includes(lowercase_name) ? `\n\t(Hint: convert to lowercase: ${lowercase_name})` : ""
-      throw new ReferenceError(`Invalid square name: "${name}"${hint}`)
+      throw ValueError(`Invalid square name: "${name}"${hint}`)
    }
    return BigInt(index) as Square
 }
 
-/** Gets the name of the square, like `"a3"`. */ // @ts-expect-error -- indexes are stringified
+/** Gets the name of the square, like `"a3"`. */ // @ts-expect-error -- bigint index
 export const square_name = (square: Square) => SQUARE_NAMES[square]
 
 /** Gets a square number by file and rank index */ // Optimization idea: rank_index << 3n | file_index
