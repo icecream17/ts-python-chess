@@ -18,7 +18,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import { ValueError } from "../src/parts/python/builtin"
+import { ValueError } from "../src/python/builtin"
 import * as chess from "../src/chess"
 
 describe("Square", () => {
