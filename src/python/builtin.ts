@@ -17,9 +17,8 @@ let _randomness;
 try {
    const big64 = new BigInt64Array(1)
    _randomness = BigInt(globalThis.crypto.getRandomValues(big64)) // works by complete accident, gotta love js
-} catch {
-   _randomness = 1928307564073802901n
-   _randomness = hash(Math.random())
+} catch (err) {
+   if (err instanceof globalThis.TypeError) _randomness = BigInt(1928307564073802901 * Math.random())
 }
 /**
  * Return the hash value for a given object
