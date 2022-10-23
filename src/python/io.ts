@@ -35,6 +35,7 @@
  */
 import { OSError, NotImplementedError } from "./builtin"
 import { None } from "../types/types"
+import { make_callable } from "../utils/objects"
 
 /** Note: Only one prototype and only one extends */
 export const UnsupportedOperation = make_callable(class UnsupportedOperation extends OSError { })

@@ -33,8 +33,8 @@
 // # --------------------------------------------------------------------
 
 import { StopIteration, IndexError, KeyError, ValueError, next, repr } from "../python/builtin"
-import { isinstance_str } from "../python/utils"
 import { None } from "../types/types"
+import { isinstance_str } from "../utils/objects"
 import type { Element } from "./ElementTree" // "circular import"
 
 // ( ttype ) | ( tag ) | whitespace

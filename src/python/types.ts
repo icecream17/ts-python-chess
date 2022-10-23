@@ -1,5 +1,5 @@
 import { _unset_, None } from "../types/types"
-import { make_callable } from "./utils"
+import { make_callable } from "../utils/objects"
 
 class SingleValueType {
    static value = _unset_

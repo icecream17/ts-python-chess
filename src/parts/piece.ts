@@ -1,11 +1,13 @@
 import { dataclass } from "../python/dataclasses"
-import { PieceType, piece_symbol, UNICODE_PIECE_SYMBOLS } from "./pieces"
+import { PieceType, piece_symbol, PIECE_SYMBOLS, UNICODE_PIECE_SYMBOLS } from "./pieces"
 import { Color } from "./colors"
 import { repr } from "../python/builtin"
+import { index } from "../python/builtin_methods"
+import { make_callable } from "../utils/objects"
 import { piece } from "../chess.svg"
 
 /** A piece with type and color */
-export class Piece extends dataclass(["piece_type", "color"]) {
+export const Piece = make_callable(class Piece extends dataclass(["piece_type", "color"]) {
    constructor (
       /** The piece type. */
       public piece_type: PieceType,
@@ -46,4 +48,8 @@ export class Piece extends dataclass(["piece_type", "color"]) {
    _repr_svg() {
       return piece(this, 45)
    }
-}
+
+   static from_symbol(symbol: string) {
+      return new this(index(PIECE_SYMBOLS, symbol), symbol === symbol.toUpperCase())
+   }
+})

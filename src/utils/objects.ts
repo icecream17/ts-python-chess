@@ -1,8 +1,7 @@
-/** @overview Internal utilities for this TS port */
 
 export const has_method = (val: unknown, method: PropertyKey) => method in val && typeof val[method] === "function"
 
-class _Ignore {}
+class _Ignore { }
 export const is_constructor = (arg: unknown) => {
    try {
       Reflect.construct(_Ignore, [], arg)

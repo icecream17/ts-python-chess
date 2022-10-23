@@ -4,7 +4,7 @@
 import { _unset_, None } from "../types/types"
 import { __repr__ as str__repr__ } from "./str"
 import { NoneType } from "./types"
-import { has_method, is_constructor, isinstance_str, make_callable } from "./utils"
+import { has_method, is_constructor, isinstance_str, make_callable } from "../utils/objects"
 
 // all constants are somewhere else
 // None: "../types/types"

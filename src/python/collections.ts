@@ -1,5 +1,5 @@
 
-import { make_callable } from "./utils";
+import { make_callable } from "../utils/objects"
 
 // Copyright © 2001-2022 Python Software Foundation; All Rights Reserved
 

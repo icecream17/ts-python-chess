@@ -40,7 +40,7 @@ export const VERSION = "1.3.0"
 import { None, NumericIndex } from "../../types/types"
 import { id, repr, type, NotImplementedError, ValueError, FutureWarning } from "../python/builtin"
 import { contextmanager } from "../python/contextlib"
-import { isinstance_str } from "../python/utils"
+import { isinstance_str } from "../utils/objects"
 import * as ElementPath from "./ElementPath"
 
 // https://docs.python.org/3/license.html says that it is GPL compatible
