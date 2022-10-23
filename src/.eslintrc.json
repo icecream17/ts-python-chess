@@ -19,13 +19,37 @@
    ],
    "root": true,
    "rules": {
+      "comma-dangle": "off",
       "indent": "off",
       "quotes": "off",
+      "@typescript-eslint/comma-dangle": [
+         "error",
+         "only-multiline"
+      ],
       "@typescript-eslint/indent": [
          "warn",
          3
       ],
       "@typescript-eslint/method-signature-style": "off",
+      "@typescript-eslint/naming-convention": [
+         "error",
+         {
+            "selector": "default",
+            "format": ["snake_case"],
+            "leadingUnderscore": "allowSingleOrDouble",
+            "trailingUnderscore": "allow"
+         },
+         {
+            "selector": "variable",
+            "format": ["snake_case", "UPPER_CASE"],
+            "leadingUnderscore": "allowSingleOrDouble",
+            "trailingUnderscore": "allow"
+         },
+         {
+            "selector": "typeLike",
+            "format": ["PascalCase"]
+         }
+      ],
       "@typescript-eslint/restrict-template-expressions": [
          "error",
          {
@@ -39,14 +63,11 @@
          "error",
          "double",
          {
+            "allowTemplateLiterals": true,
             "avoidEscape": true
          }
       ],
 
-      "comma-dangle": [
-         "error",
-         "only-multiline"
-      ],
       "object-property-newline": "off"
    }
 }

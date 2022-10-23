@@ -121,4 +121,3 @@ describe("Piece", () => {
       expect(hashes.__eq__(set(range(12)))).toBe(true)
    })
 })
-

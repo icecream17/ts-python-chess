@@ -75,6 +75,7 @@
          "error",
          "double",
          {
+            "allowTemplateLiterals": true,
             "avoidEscape": true
          }
       ],
