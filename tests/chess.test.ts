@@ -117,7 +117,7 @@ describe("Piece", () => {
          hashes.add(hash(piece))
       }
 
-      expect(pieces.length).toBe(12)
+      expect(pieces.size).toBe(12)
       expect(hashes.__eq__(set(range(12)))).toBe(true)
    })
 })
