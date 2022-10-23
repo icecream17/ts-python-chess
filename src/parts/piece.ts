@@ -5,7 +5,7 @@ import { repr } from "../python/builtin"
 import { piece } from "../chess.svg"
 
 /** A piece with type and color */
-class Piece extends dataclass(["piece_type", "color"]) {
+export class Piece extends dataclass(["piece_type", "color"]) {
    constructor (
       /** The piece type. */
       public piece_type: PieceType,
