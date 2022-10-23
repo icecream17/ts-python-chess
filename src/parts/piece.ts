@@ -50,6 +50,6 @@ export const Piece = make_callable(class Piece extends dataclass(["piece_type", 
    }
 
    static from_symbol(symbol: string) {
-      return new this(index(PIECE_SYMBOLS, symbol), symbol === symbol.toUpperCase())
+      return new this(index(PIECE_SYMBOLS, symbol.toLowerCase()), symbol === symbol.toUpperCase())
    }
 })

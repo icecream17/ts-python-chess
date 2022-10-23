@@ -242,6 +242,42 @@ export const repr = (val: SupportedRepr) => {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+const __eq__ = (obj1, obj2) => {
+   // Python doesn't check that a boolean is returned
+   if ("__eq__" in obj1) {
+      return obj1.__eq__(obj2)
+   } else if ("__eq__" in obj2) {
+      return obj2.__eq__(obj1)
+   } else {
+      // Default; note python implements -0 === +0 and math.nan !== math.nan
+      return obj1 === obj2
+   }
+}
+
+export const set = make_callable(class set extends Set {
+   override add(value) {
+      if (this.has(value)) {
+         return this
+      }
+      return super.add(value)
+   }
+
+   override delete(value) {
+      for (const item of this)
+         if (__eq__(item, value))
+            return super.delete(item)
+      return false
+   }
+
+   override has(value) {
+      for (const item of this)
+         if (__eq__(item, value))
+            return true
+      return false
+   }
+})
+
+///////////////////////////////////////////////////////////////////////////////
 export const str = String
 
 

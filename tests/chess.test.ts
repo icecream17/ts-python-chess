@@ -18,7 +18,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import { hash, repr, str, ValueError } from "../src/python/builtin"
+import { hash, repr, set, str, ValueError } from "../src/python/builtin"
 import * as chess from "../src/chess"
 
 describe("Square", () => {
@@ -71,18 +71,18 @@ describe("Piece", () => {
       const d1 = chess.Piece(chess.BISHOP, chess.WHITE)
       const d2 = chess.Piece(chess.BISHOP, chess.WHITE)
 
-      expect((new Set([a, b, c, d1, d2])).size).toBe(5)
+      expect(set([a, b, c, d1, d2]).size).toBe(3)
 
-      expect(a).toBe(d1)
-      expect(d1).toBe(a)
-      expect(d1).toBe(d2)
+      expect(a).toStrictEqual(d1)
+      expect(d1).toStrictEqual(a)
+      expect(d1).toStrictEqual(d2)
 
       expect(repr(a)).toBe(repr(d1))
 
-      expect(a).not.toBe(b)
-      expect(b).not.toBe(c)
-      expect(b).not.toBe(d1)
-      expect(a).not.toBe(c)
+      expect(a).not.toStrictEqual(b)
+      expect(b).not.toStrictEqual(c)
+      expect(b).not.toStrictEqual(d1)
+      expect(a).not.toStrictEqual(c)
 
       expect(repr(a)).not.toBe(repr(b))
       expect(repr(b)).not.toBe(repr(c))
@@ -108,7 +108,7 @@ describe("Piece", () => {
 
    test("hash", () => {
       for (const [i, symbol] of Object.entries("pnbrqkPNBRQK")) {
-         expect(hash(symbol)).toBe(Number(i))
+         expect(hash(chess.Piece.from_symbol(symbol))).toBe(Number(i))
       }
    })
 })
