@@ -120,7 +120,7 @@ const _hash = (val: unknown) => {
       return 12n
    } else if ("__hash__" in val) { // python runs __hash__ without any further checks
       const h = val.__hash__() // python does not allow the float 1.0 but I do bc PieceType
-      if (typeof h !== "bigint" || Number.isInteger(h)) {
+      if (typeof h !== "bigint" && !Number.isInteger(h)) {
          throw TypeError("__hash__ method should return a bigint")
       }
       return BigInt(h)
@@ -218,8 +218,8 @@ export const repr = (val: SupportedRepr) => {
       return val ? "True" : "False"
    } else if (typeof val === "undefined") {
       throw TypeError("Python doesn't have undefined (None is null)")
-   } else if ("__repr__" in obj) {
-      const r = obj.__repr__()
+   } else if ("__repr__" in val) {
+      const r = val.__repr__()
       if (!isinstance_str(r)) {
          throw TypeError(`__repr__ returned non-string (type ${type(r).name})`)
       }
