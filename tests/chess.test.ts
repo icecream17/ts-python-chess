@@ -108,7 +108,7 @@ describe("Piece", () => {
 
    test("hash", () => {
       for (const [i, symbol] of Object.entries("pnbrqkPNBRQK")) {
-         expect(hash(chess.Piece.from_symbol(symbol))).toBe(Number(i))
+         expect(hash(chess.Piece.from_symbol(symbol))).toBe(BigInt(i))
       }
    })
 })

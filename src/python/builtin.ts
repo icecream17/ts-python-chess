@@ -82,9 +82,10 @@ try {
  * Return the hash value for a given object
  *
  * Two objects that compare equal must also have the same hash
+ *
+ * The hash of an object that implements __hash__ is returned without changes
  */
-export const hash = (val: unknown) => (_hash(val) + _randomness) % (1n << 64n)
-const _hash = (val: unknown) => {
+export const hash = (val: unknown) => {
    // All that's necessary is:
    // - if they're equal, their hashes are equal
    // - return an integer
@@ -108,12 +109,12 @@ const _hash = (val: unknown) => {
          val += val
          result += result
       }
-      return result * BigInt(val)
+      return (result * BigInt(val) * _randomness) % (1 << 64)
    } else if (type === "string") {
       if (val === "") return -_randomness
       return [...val].reduce((accum, next) => accum << 5n + BigInt(next.codePointAt(0)) * 987n, 7n) * BigInt(val.length)
    } else if (type === "symbol") {
-      return hash(val.description) * 77n % 1000_0000_0000_0000n
+      return hash(val.description) * 77n ^ 1000_0000_0000_0000n
    } else if (type === "undefined") {
       return 0n
    } else if (val === None) {
@@ -223,6 +224,7 @@ export const repr = (val: SupportedRepr) => {
       if (!isinstance_str(r)) {
          throw TypeError(`__repr__ returned non-string (type ${type(r).name})`)
       }
+      return r
    } else if (typeof val === "function") {
       let words = []
       if (is_constructor(val)) {
