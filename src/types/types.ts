@@ -49,4 +49,7 @@ export const None = null
 export type None = null
 export type Optional<T> = None | T
 
+export const _unset_ = Symbol("unset")
+export type _unset_ = typeof _unset_
+
 export type NumericIndex = number | bigint | `${number | bigint}`

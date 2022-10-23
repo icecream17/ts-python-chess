@@ -46,11 +46,14 @@ declare global {
    }
 }
 
+// Definition order is preserved
 export * from "./parts/colors"
 export * from "./parts/pieces"
+export * from "./parts/board_metadata"
 export * from "./parts/status"
 export * from "./parts/outcome"
 export * from "./parts/move_errors"
-export * from "./parts/board"
+export * from "./parts/squares"
 export * from "./parts/bboard"
 export * from "./parts/regexes"
+export * from "./parts/piece"

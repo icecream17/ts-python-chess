@@ -38,9 +38,9 @@
 export const VERSION = "1.3.0"
 
 import { None, NumericIndex } from "../../types/types"
-import { id, repr, NotImplementedError, ValueError, FutureWarning } from "../python/builtin"
+import { id, repr, type, NotImplementedError, ValueError, FutureWarning } from "../python/builtin"
 import { contextmanager } from "../python/contextlib"
-import { isinstance_str, typename } from "../python/utils"
+import { isinstance_str } from "../python/utils"
 import * as ElementPath from "./ElementPath"
 
 // https://docs.python.org/3/license.html says that it is GPL compatible
@@ -169,7 +169,7 @@ export class Element extends Array<Element> {
 
       // There's not really a dictionary type, so just check if it's an Object
       if (attrib !== Object(attrib)) {
-         throw TypeError(`attrib must be dict, not ${typename(attrib)}`)
+         throw TypeError(`attrib must be dict, not ${type(attrib).name}`)
       }
 
       // I'm using Object as dictionary which is very unsafe
@@ -692,7 +692,7 @@ const _get_writer = contextmanager((file_or_filename, encoding: string) => {
    if (encoding.toLowerCase() === "unicode") {
       yield [write, file_or_filename.encoding || "utf-8"]
    } else {
-      throw NotImplementedError("Todo: contextlib.ExitStack (TS port)")
+      throw NotImplementedError("Todo: io.BytesIO io.BufferedIOBase (TS port)")
    }
 })
 

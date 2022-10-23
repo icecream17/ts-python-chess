@@ -1,14 +1,71 @@
 /**
  * @overview Built-in functions, exceptions, and other objects
  **/
-import { None } from "../types/types"
+import { _unset_, None } from "../types/types"
 import { __repr__ as str__repr__ } from "./str"
-import { has_method, is_constructor, isinstance_str, make_callable, typename } from "./utils";
+import { NoneType } from "./types"
+import { has_method, is_constructor, isinstance_str, make_callable } from "./utils"
 
-// const _unused = Symbol()
+// all constants are somewhere else
+// None: "../types/types"
+// NotImplemented: "./types"
+
+// syntax
+/**
+ * Simulates 'assert'
+ * https://docs.python.org/3/reference/simple_stmts.html#the-assert-statement
+ **/
+export const python_assert = (cond: boolean, message = "") => {
+   if (!cond) throw AssertionError(message)
+}
+
+type _python__exit__ =
+   ((exc_type: typeof BaseException, exc_val: BaseException, exc_tb: string | undefined) => any) &
+   ((exc_type: None, exc_val: None, exc_tb: None) => any)
+
+/**
+ * Simulates `with`.
+ * https://docs.python.org/3/reference/compound_stmts.html#the-with-statement
+ *
+ * ```py
+ * with context_manager:
+ *    code
+ * with (context_manager as alias):
+ *    code
+ * ```
+ *
+ * ```ts
+ * python_with(context_manager, false, () => code)
+ * python_with(context_manager, true, () => code)
+ * ```
+ */
+export const python_with = (context_manager, as_alias: boolean, suite_callback) => {
+   if (typeof as_alias !== "boolean") {
+      throw TypeError("python_with: param as_alias must be a boolean")
+   }
+
+   // Steps 2 and 3 (note: example code is more accurate than description)
+   const enter = context_manager.constructor.prototype.__enter__.bind(context_manager)
+   const exit = context_manager.constructor.prototype.__exit__.bind(context_manager)
+
+   // Step 4
+   const enter_return = enter()
+
+   // Steps 5 6 and 7
+   let suite_errored = false
+   try {
+      as_alias ? suite_callback(enter_return) : suite_callback()
+   } catch (error) {
+      suite_errored = true
+      if (!exit(error.constructor, error, error.stack)) throw error
+   }
+   if (!suite_errored) exit(None, None, None)
+}
+
+
 // ///////////////////////////////////////////////////////////////////////////////
 // const _noattr = { __proto__: null }
-// export const getattr = <D>(val: unknown, default_: D | _unused = _unused) => {
+// export const getattr = <D>(val: unknown, default_: D | _unset_ = _unset_) => {
 
 // }
 
@@ -53,7 +110,7 @@ const _hash = (val: unknown) => {
       }
       return result * BigInt(val)
    } else if (type === "string") {
-      if (val === "") return 0n
+      if (val === "") return -_randomness
       return [...val].reduce((accum, next) => accum << 5n + BigInt(next.codePointAt(0)) * 987n, 7n) * BigInt(val.length)
    } else if (type === "symbol") {
       return hash(val.description) * 77n % 1000_0000_0000_0000n
@@ -62,25 +119,13 @@ const _hash = (val: unknown) => {
    } else if (val === None) {
       return 12n
    } else if ("__hash__" in val) { // python runs __hash__ without any further checks
-      const h = val.__hash__()
-      if (typeof h !== "bigint" && !Number.isInteger(h)) {
-         throw TypeError("__hash__ method should return an integer")
+      const h = val.__hash__() // python does not allow the float 1.0 but I do bc PieceType
+      if (typeof h !== "bigint" || Number.isInteger(h)) {
+         throw TypeError("__hash__ method should return a bigint")
       }
       return BigInt(h)
    }
-   try {
-      let s = Object.prototype.toString(val) + val + type
-      for (const prop of Object.getOwnPropertyNames(val).concat(Object.getOwnPropertySymbols(val))) {
-         s += prop + Object.getOwnPropertyDescriptor(val, prop).keys()
-      }
-      return hash(s)
-   } catch (err) {
-      try {
-         return hash(err?.message + err?.stack) ^ hash(err?.cause)
-      } catch {
-         return 500n
-      }
-   }
+   return id(h)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -94,22 +139,33 @@ let next_id = 0n
  * (CPython uses the object's memory address.)
  */
 export const id = (object: object) =>
-   _ids.get(object) ?? (_ids.set(object, next_id++), next_id)
+   _ids.get(object) ?? (_ids.set(object, next_id), next_id++)
 
 ///////////////////////////////////////////////////////////////////////////////
 // this was much harder
-export const next = <T, R, D>(iter: Iterator<T, R>, default_: D | typeof _unused = _unused) => {
+export const next = <T, R, D>(iter: Iterator<T, R>, default_: D | _unset_ = _unset_) => {
    if (!has_method(iter, "next")) {
-      throw TypeError(`'${typename(iter)}' object is not an iterator`)
+      throw TypeError(`'${type(iter).name}' object is not an iterator`)
    }
    const result = iter.next()
    if (!result.done || result.value !== undefined) {
       return result.value as T | Exclude<R, undefined>
    }
-   if (default_ === _unused) {
+   if (default_ === _unset_) {
       throw StopIteration()
    }
    return default_
+}
+
+///////////////////////////////////////////////////////////////////////////////
+export const type = <T>(val: T, two = _unset_) => {
+   if (two !== _unset_) throw NotImplementedError("3 arg version not implemented yet")
+   if (val === None) return NoneType
+
+   // @ts-expect-error
+   if (val === undefined) val.constructor
+   if ("__class__" in val) return val.__class__
+   return val.constructor
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -122,6 +178,30 @@ type SupportedRepr =
    | (abstract new (...args: any) => any)
    | { __repr__(): string }
    | boolean
+   | bigint
+
+/*
+const GeneratorFunction = Object.getPrototypeOf(Object.getPrototypeOf((function* () { })())).constructor.constructor
+const AsyncGeneratorFunction = Object.getPrototypeOf(Object.getPrototypeOf((async function* () { })())).constructor.constructor
+
+const is_generator = (val: unknown): val extends Generator<any, any, any> ? boolean : false => {
+   try {
+      Object.getPrototypeOf(Object.getPrototypeOf(val)).constructor.constructor === GeneratorFunction
+   } catch (err) {
+      if (err instanceof TypeError) return false
+      throw err
+   }
+}
+
+const is_async_generator = (val: unknown): val extends Generator<any, any, any> ? boolean : false => {
+   try {
+      Object.getPrototypeOf(Object.getPrototypeOf(val)).constructor.constructor === AsyncGeneratorFunction
+   } catch (err) {
+      if (err instanceof TypeError) return false
+      throw err
+   }
+}
+*/
 
 export const repr = (val: SupportedRepr) => {
    if (val === None) {
@@ -133,7 +213,7 @@ export const repr = (val: SupportedRepr) => {
    } else if (typeof val === "symbol") {
       throw "Unimplemented!"
    } else if (typeof val === "bigint") {
-      throw "Unimplemented!"
+      return val.toString()
    } else if (typeof val === "boolean") {
       return val ? "True" : "False"
    } else if (typeof val === "undefined") {
@@ -141,13 +221,15 @@ export const repr = (val: SupportedRepr) => {
    } else if ("__repr__" in obj) {
       const r = obj.__repr__()
       if (!isinstance_str(r)) {
-         throw TypeError(`__repr__ returned non-string (type ${typename})`)
+         throw TypeError(`__repr__ returned non-string (type ${type(r).name})`)
       }
    } else if (typeof val === "function") {
       let words = []
       if (is_constructor(val)) {
          words.push("class", `'${val.name}'`)
       } else {
+         // Python just uses "function" or "method" even if it's a Generator or Async
+         // And "<lambda>" even when there's a name, I don't check <lambda> yet
          if (Object.values(BUILTINS).includes(val)) {
             words.push("built-in function", val.name)
          } else {
@@ -158,6 +240,9 @@ export const repr = (val: SupportedRepr) => {
    }
    throw "Unimplemented!"
 }
+
+///////////////////////////////////////////////////////////////////////////////
+export const str = String
 
 
 /****************************************************************************/

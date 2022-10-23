@@ -4,18 +4,6 @@ import { abs, greater } from "../utils/math"
 
 export { Square } from "../types/types"
 
-// Note: Definitions are in the order that python-chess defines
-
-export const FILE_NAMES = ["a", "b", "c", "d", "e", "f", "g", "h"] as const
-
-export const RANK_NAMES = ["1", "2", "3", "4", "5", "6", "7", "8"] as const
-
-/** The FEN for the standard chess starting position. */
-export const STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-
-/** The board part of the FEN for the standard chess starting position. */
-export const STARTING_BOARD_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
-
 /**
  * !`docsNotInPythonChess`
  * Squares can be thought of as having 6 bits,
@@ -31,8 +19,8 @@ export const STARTING_BOARD_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
  * ```
  */
 export const SQUARES = [
-    0n,  1n,  2n,  3n,  4n,  5n,  6n,  7n,
-    8n,  9n, 10n, 11n, 12n, 13n, 14n, 15n,
+   0n, 1n, 2n, 3n, 4n, 5n, 6n, 7n,
+   8n, 9n, 10n, 11n, 12n, 13n, 14n, 15n,
    16n, 17n, 18n, 19n, 20n, 21n, 22n, 23n,
    24n, 25n, 26n, 27n, 28n, 29n, 30n, 31n,
    32n, 33n, 34n, 35n, 36n, 37n, 38n, 39n,
@@ -100,4 +88,4 @@ export const square_distance = (a: Square, b: Square) =>
 /** Mirrors the square vertically */
 export const square_mirror = (square: Square) => (square ^ 0b111000n) as Square
 
-export const SQUARES_180 = Object.freeze(SQUARES.map(square => square_mirror(square)))
+export const SQUARES_180 = SQUARES.map(square => square_mirror(square))

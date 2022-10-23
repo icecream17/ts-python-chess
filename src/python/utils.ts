@@ -33,22 +33,3 @@ export const make_callable = <V, T extends (new (...args: A) => R), A extends V[
       }
    }) as T & ((...args: A) => R)
 }
-
-// Ok stop this is never going to be possible
-// Especially with function method type
-
-// Random type notes:
-// typeof             always works
-// Array.isArray      ( revoked Proxy -> TypeError )
-// WeakMap#delete     ( this is not object or does not have internal slot [[WeakMapData]] -> TypeError )
-// WeakSet#delete     ( "" but with [[WeakSetData]] -> TypeError )
-const typename_map = Object.assign(Object.create(null), {
-   null: "NoneType",
-   String: "str",
-   BigInt: "int",
-   Number: "float",
-})
-export const typename = (value: unknown) => {
-   const base_typename = value == null ? String(value) : (value?.constructor?.name ?? "unknown")
-   return typename_map?.[base_typename] ?? base_typename
-}
