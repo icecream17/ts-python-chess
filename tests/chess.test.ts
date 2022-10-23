@@ -19,6 +19,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import { hash, repr, set, str, ValueError } from "../src/python/builtin"
+import { range } from "../src/utils/math"
 import * as chess from "../src/chess"
 
 describe("Square", () => {
@@ -106,10 +107,18 @@ describe("Piece", () => {
       expect(str(black_queen)).toBe("q")
    })
 
+   // Change when https://github.com/tc39/proposal-iterator-helpers happens
    test("hash", () => {
-      for (const [i, symbol] of Object.entries("pnbrqkPNBRQK")) {
-         expect(hash(chess.Piece.from_symbol(symbol))).toBe(BigInt(i))
+      const pieces = set()
+      const hashes = set()
+      for (const symbol of "pnbrqkPNBRQK") {
+         const piece = chess.Piece.from_symbol(symbol)
+         pieces.add(piece)
+         hashes.add(hash(piece))
       }
+
+      expect(pieces.length).toBe(12)
+      expect(hashes.__eq__(set(range(12)))).toBe(true)
    })
 })
 

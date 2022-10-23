@@ -51,7 +51,9 @@ Other subtle differences:
 
 - `None` is `null` (internally)
 - `__str__` is `toString`
+- `__class__` is `constructor`
 - `__repr__` et al do not have JS equivalents, they're just stored as is
+- Python has overridable equality, js does not. A special python `set` type is provided.
 - Both lists and tuples are represented with arrays
 - dicts are either regular objects or Maps
 - Error messages are not guaranteed to be the same but hopefully they're at least as good.

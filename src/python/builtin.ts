@@ -3,14 +3,14 @@
  **/
 import { _unset_, None } from "../types/types"
 import { __repr__ as str__repr__ } from "./str"
-import { NoneType } from "./types"
+import { NoneType, NotImplemented } from "./types"
 import { has_method, is_constructor, isinstance_str, make_callable } from "../utils/objects"
 
 // all constants are somewhere else
 // None: "../types/types"
 // NotImplemented: "./types"
 
-// syntax
+// Built-in syntax //
 /**
  * Simulates 'assert'
  * https://docs.python.org/3/reference/simple_stmts.html#the-assert-statement
@@ -62,6 +62,9 @@ export const python_with = (context_manager, as_alias: boolean, suite_callback) 
    if (!suite_errored) exit(None, None, None)
 }
 
+
+// Built-in functions and types //
+// They're combined right now because idk what to do with `type`
 
 // ///////////////////////////////////////////////////////////////////////////////
 // const _noattr = { __proto__: null }
@@ -159,17 +162,6 @@ export const next = <T, R, D>(iter: Iterator<T, R>, default_: D | _unset_ = _uns
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-export const type = <T>(val: T, two = _unset_) => {
-   if (two !== _unset_) throw NotImplementedError("3 arg version not implemented yet")
-   if (val === None) return NoneType
-
-   // @ts-expect-error
-   if (val === undefined) val.constructor
-   if ("__class__" in val) return val.__class__
-   return val.constructor
-}
-
-///////////////////////////////////////////////////////////////////////////////
 /** Types implemented in {@link repr} */
 type SupportedRepr =
    | string
@@ -256,7 +248,17 @@ const __eq__ = (obj1, obj2) => {
    }
 }
 
-export const set = make_callable(class set extends Set {
+export const set = make_callable(class set<T> extends Set<T> {
+   constructor (iterable?: Iterable<T> | null) {
+      super()
+      // isHTMLDDA
+      if (iterable !== null && iterable !== undefined) {
+         for (const val of iterable) {
+            this.add(val)
+         }
+      }
+   }
+
    override add(value) {
       if (this.has(value)) {
          return this
@@ -277,10 +279,37 @@ export const set = make_callable(class set extends Set {
             return true
       return false
    }
+
+   __eq__(other) {
+      if (type(this) === type(other)) {
+         if (this.size !== other.size) {
+            return false
+         }
+
+         for (const item of this) {
+            if (!other.has(item)) {
+               return false
+            }
+         }
+
+         return true
+      }
+      return NotImplemented
+   }
 })
 
 ///////////////////////////////////////////////////////////////////////////////
 export const str = String
+
+
+///////////////////////////////////////////////////////////////////////////////
+export const type = <T> (val: T, two = _unset_) => {
+   if (two !== _unset_) throw NotImplementedError("3 arg version not implemented yet")
+   if (val === None) return NoneType
+
+   // @ts-expect-error -- if (val === undefined) val.constructor
+   return val.constructor
+}
 
 
 /****************************************************************************/

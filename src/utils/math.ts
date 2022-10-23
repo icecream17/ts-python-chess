@@ -1,3 +1,4 @@
+// TODO: All of these are python built-ins/methods
 
 /** The absolute value of b */
 export const abs = (b: bigint) => b < 0n ? -b : b
