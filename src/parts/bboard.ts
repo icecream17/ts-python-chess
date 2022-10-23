@@ -1,6 +1,6 @@
 import { bit_length, range8 } from "../utils/math"
 import { Square } from "../types/types"
-import { SQUARES, square_distance, square_file, square_rank } from "./board"
+import { SQUARES, square_distance, square_file, square_rank } from "./squares"
 
 /**
  * Would be the range from 0 to 2^64 - 1 if ranges were supported
