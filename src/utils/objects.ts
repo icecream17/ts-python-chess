@@ -14,6 +14,8 @@ export const is_constructor = (arg: unknown) => {
    }
 }
 
+export const is_object = (val: unknown) => val !== null && (typeof val === "object" || typeof val === "function")
+
 /** isinstance(str) */
 export const isinstance_str = (val: unknown) => typeof val === "string" || val instanceof String
 

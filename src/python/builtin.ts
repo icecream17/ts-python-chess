@@ -4,7 +4,7 @@
 import { _unset_, None } from "../types/types"
 import { __repr__ as str__repr__ } from "./str"
 import { NoneType, NotImplemented } from "./types"
-import { has_method, is_constructor, isinstance_str, make_callable } from "../utils/objects"
+import { has_method, is_constructor, is_object, isinstance_str, make_callable } from "../utils/objects"
 
 // all constants are somewhere else
 // None: "../types/types"
@@ -238,12 +238,14 @@ export const repr = (val: SupportedRepr) => {
 ///////////////////////////////////////////////////////////////////////////////
 const __eq__ = (obj1, obj2) => {
    // Python doesn't check that a boolean is returned
-   if ("__eq__" in obj1) {
+   if (!is_object(obj1) || !is_object(obj2)) {
+      // Note: python implements -0 === +0 and math.nan !== math.nan
+      return obj1 === obj2
+   } else if ("__eq__" in obj1) {
       return obj1.__eq__(obj2)
    } else if ("__eq__" in obj2) {
       return obj2.__eq__(obj1)
    } else {
-      // Default; note python implements -0 === +0 and math.nan !== math.nan
       return obj1 === obj2
    }
 }
