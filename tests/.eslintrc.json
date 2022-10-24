@@ -47,19 +47,20 @@
          "error",
          {
             "selector": "default",
-            "format": ["snake_case"],
-            "leadingUnderscore": "allowSingleOrDouble",
-            "trailingUnderscore": "allow"
-         },
-         {
-            "selector": "variable",
-            "format": ["snake_case", "UPPER_CASE"],
+            "format": [
+               "snake_case",
+               "UPPER_CASE",
+               "camelCase"
+            ],
             "leadingUnderscore": "allowSingleOrDouble",
             "trailingUnderscore": "allow"
          },
          {
             "selector": "typeLike",
-            "format": ["PascalCase"]
+            "format": [
+               "PascalCase",
+               "camelCase"
+            ]
          }
       ],
       "@typescript-eslint/restrict-template-expressions": [
