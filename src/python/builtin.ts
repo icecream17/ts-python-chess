@@ -29,20 +29,17 @@ export const python_eq = (obj1, obj2) => {
       // Note: python implements -0 === +0 and math.nan !== math.nan
       return obj1 === obj2
    }
-   let ni = 0
    if ("__eq__" in obj1) {
       const result = obj1.__eq__(obj2)
       if (result !== NotImplemented) {
          return result
       }
-      ni++
    }
    if ("__eq__" in obj2) {
       const result = obj2.__eq__(obj1)
       if (result !== NotImplemented) {
          return result
       }
-      ni++
    }
    // Default object.__eq__, equivalent to Object.is
    // Really Object.is isn't necessary because NaN and -0 are already filtered
