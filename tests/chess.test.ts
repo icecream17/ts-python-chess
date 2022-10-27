@@ -22,7 +22,7 @@ import { python_eq, hash, repr, set, str, ValueError } from "../src/python/built
 import { range } from "../src/utils/math"
 import * as chess from "../src/chess"
 
-const assert_eq = (a, b) => {
+const assert_eq = (a, b): void => {
    expect(python_eq(a, b)).toBe(true)
 }
 
@@ -32,14 +32,14 @@ const assert_eq = (a, b) => {
 // Proxies
 
 // Don't use on primitives
-const copy = (val: object) => {
+const copy = <T extends object>(val: T): T => {
    if ("__copy__" in val) {
       return val.__copy__()
    }
    if ("slice" in val) {
       return val.slice()
    }
-   const v = Object.create(Object.getPrototypeOf(val))
+   const v = Object.create(Object.getPrototypeOf(val)) as T
    return Object.defineProperties(v, Object.fromEntries(
       Object.getOwnPropertyNames(val)
          .concat(Object.getOwnPropertySymbols(val))
@@ -142,7 +142,6 @@ describe("Move", () => {
       assert_eq(copy(c), c)
    })
 })
-
 
 describe("Piece", () => {
    test("equality", () => {

@@ -26,6 +26,14 @@
    ],
    "root": true,
    "rules": {
+      "jest/expect-expect": [
+         "error",
+         {
+            "additionalTestBlockFunctions": [
+               "assert_eq"
+            ]
+         }
+      ],
       "jest/no-focused-tests": "error",
       "jest/no-identical-title": "error",
       "jest/prefer-to-have-length": "error",
