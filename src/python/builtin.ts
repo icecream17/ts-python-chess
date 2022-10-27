@@ -24,7 +24,7 @@ export const python_assert = (cond: boolean, message = "") => {
 }
 
 // Every time you type "==" in python this happens, isn't that amazing
-const python_eq = (obj1, obj2) => {
+export const python_eq = (obj1, obj2) => {
    if (!is_object(obj1) || !is_object(obj2)) {
       // Note: python implements -0 === +0 and math.nan !== math.nan
       return obj1 === obj2
