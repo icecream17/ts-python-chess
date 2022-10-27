@@ -29,7 +29,8 @@
       "jest/expect-expect": [
          "error",
          {
-            "additionalTestBlockFunctions": [
+            "assertFunctionNames": [
+               "expect",
                "assert_eq"
             ]
          }
