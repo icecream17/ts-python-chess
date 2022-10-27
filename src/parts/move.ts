@@ -80,7 +80,7 @@ export const Move = make_callable(class Move extends dataclass(["from_square", "
             throw err
          }
          return this(square, square, None, drop)
-      } else if (4 <= this.length && this.length <= 5) {
+      } else if (4 <= uci.length && uci.length <= 5) {
          let from_square, to_square, promotion
          try {
             from_square = index(SQUARE_NAMES, uci.slice(0,2))

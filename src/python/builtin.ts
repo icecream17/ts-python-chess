@@ -327,14 +327,14 @@ export const set = make_callable(class set<T> extends Set<T> {
 
    override delete(value) {
       for (const item of this)
-         if (__eq__(item, value))
+         if (python_eq(item, value))
             return super.delete(item)
       return false
    }
 
    override has(value) {
       for (const item of this)
-         if (__eq__(item, value))
+         if (python_eq(item, value))
             return true
       return false
    }
