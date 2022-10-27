@@ -6,6 +6,10 @@ import { __repr__ as str__repr__ } from "./str"
 import { NoneType, NotImplemented } from "./types"
 import { has_method, is_constructor, is_object, isinstance_str, make_callable } from "../utils/objects"
 
+// Lots from cpython
+// See https://docs.python.org/3/license.html
+// Copyright © 2001-2022 Python Software Foundation; All Rights Reserved
+
 // all constants are somewhere else
 // None: "../types/types"
 // NotImplemented: "./types"
@@ -17,6 +21,35 @@ import { has_method, is_constructor, is_object, isinstance_str, make_callable } 
  **/
 export const python_assert = (cond: boolean, message = "") => {
    if (!cond) throw AssertionError(message)
+}
+
+// Every time you type "==" in python this happens, isn't that amazing
+const python_eq = (obj1, obj2) => {
+   if (!is_object(obj1) || !is_object(obj2)) {
+      // Note: python implements -0 === +0 and math.nan !== math.nan
+      return obj1 === obj2
+   }
+   let ni = 0
+   if ("__eq__" in obj1) {
+      const result = obj1.__eq__(obj2)
+      if (result !== NotImplemented) {
+         return result
+      }
+      ni++
+   }
+   if ("__eq__" in obj2) {
+      const result = obj2.__eq__(obj1)
+      if (result !== NotImplemented) {
+         return result
+      }
+      ni++
+   }
+   // Default object.__eq__, equivalent to Object.is
+   // Really Object.is isn't necessary because NaN and -0 are already filtered
+   // out, but semantics!
+   // Verified by arbitrary class.__eq__ NotImplemented returns with
+   // objects of the same class and of different class
+   return Object.is(obj1, obj2)
 }
 
 type _python__exit__ =
@@ -81,12 +114,20 @@ try {
    if (err instanceof globalThis.TypeError) _randomness = BigInt(1928307564073802901 * Math.random())
    else throw err
 }
+
+// const _PyHASH_MULTIPLER = 1_000_003n
+const _PyHASH_BITS = 31n
+const _PyHASH_MODULUS = 1n << _PyHASH_BITS - 1n
+const _PyHASH_INF = 314159n
+
 /**
  * Return the hash value for a given object
  *
  * Two objects that compare equal must also have the same hash
  *
  * The hash of an object that implements __hash__ is returned without changes
+ *
+ * https://github.com/python/cpython/blob/main/Python/pyhash.c
  */
 export const hash = (val: unknown) => {
    // All that's necessary is:
@@ -100,22 +141,46 @@ export const hash = (val: unknown) => {
       if (Number.isNaN(val)) {
          return -2n
       } else if (!Number.isFinite(val)) {
-         return BigInt(Math.sign(val)) - 2n
-      } else if (Object.is(val, -0)) {
-         return -3n
+         return BigInt(Math.sign(val)) * _PyHASH_INF
+      } else if (Number.isInteger(val)) {
+         return BigInt(val) // int floats and ints are equal
       } else if (val < 0) {
-         return -hash(-val) - 4n
+         return -hash(-val)
       }
 
-      let result = 1n
+      // Calculate floating-point mantissa+exponent
+      let exponent = 1n
       while (!Number.isInteger(val)) {
          val += val
-         result += result
+         exponent++
       }
-      return (result * BigInt(val) * _randomness) % (1 << 64)
+
+      let m = BigInt(val)
+      let e = exponent
+      let x = 0n
+      let y
+      // Copy paste
+      /* process 28 bits at a time;  this should work well both for binary
+         and hexadecimal floating point. */
+      while (m) {
+         x = ((x << 28n) & _PyHASH_MODULUS) | x >> (_PyHASH_BITS - 28n);
+         m *= 268435456n;  /* 2**28 */
+         e -= 28n;
+         y = m;  /* pull out integer part */
+         m -= y;
+         x += y;
+         if (x >= _PyHASH_MODULUS)
+            x -= _PyHASH_MODULUS;
+      }
+
+      /* adjust for the exponent;  first reduce it modulo _PyHASH_BITS */
+      e %= _PyHASH_BITS
+      return ((x << e) & _PyHASH_MODULUS) | x >> (_PyHASH_BITS - e);
+
+      //return (exponent * BigInt(val) * _randomness) % (1 << 64)
    } else if (type === "string") {
       if (val === "") return -_randomness
-      return [...val].reduce((accum, next) => accum << 5n + BigInt(next.codePointAt(0)) * 987n, 7n) * BigInt(val.length)
+      return [...val].reduce((accum, next) => accum << 5n ^ BigInt(next.codePointAt(0)) * _randomness, 7n) * BigInt(val.length)
    } else if (type === "symbol") {
       return hash(val.description) * 77n ^ 1000_0000_0000_0000n
    } else if (type === "undefined") {
@@ -128,6 +193,10 @@ export const hash = (val: unknown) => {
          throw TypeError("__hash__ method should return a bigint")
       }
       return BigInt(h)
+   } else if (Array.isArray(val)) {
+      return val.reduce((accum, next) => accum << 5n ^ (is_object(next) ? 128n : hash(next)) * _randomness, 7n) * BigInt(val.length)
+   } else if (val instanceof Map || val instanceof WeakMap || val instanceof Set || val instanceof WeakSet) {
+      return hash([...val])
    }
    return id(h)
 }
@@ -146,7 +215,6 @@ export const id = (object: object) =>
    _ids.get(object) ?? (_ids.set(object, next_id), next_id++)
 
 ///////////////////////////////////////////////////////////////////////////////
-// this was much harder
 export const next = <T, R, D>(iter: Iterator<T, R>, default_: D | _unset_ = _unset_) => {
    if (!has_method(iter, "next")) {
       throw TypeError(`'${type(iter).name}' object is not an iterator`)
@@ -212,6 +280,9 @@ export const repr = (val: SupportedRepr) => {
    } else if (typeof val === "undefined") {
       throw TypeError("Python doesn't have undefined (None is null)")
    } else if ("__repr__" in val) {
+      if (val.__repr__ === None) {
+         throw TypeError(`Unhashable type: ${type(val).name}`)
+      }
       const r = val.__repr__()
       if (!isinstance_str(r)) {
          throw TypeError(`__repr__ returned non-string (type ${type(r).name})`)
@@ -236,20 +307,6 @@ export const repr = (val: SupportedRepr) => {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-const __eq__ = (obj1, obj2) => {
-   // Python doesn't check that a boolean is returned
-   if (!is_object(obj1) || !is_object(obj2)) {
-      // Note: python implements -0 === +0 and math.nan !== math.nan
-      return obj1 === obj2
-   } else if ("__eq__" in obj1) {
-      return obj1.__eq__(obj2)
-   } else if ("__eq__" in obj2) {
-      return obj2.__eq__(obj1)
-   } else {
-      return obj1 === obj2
-   }
-}
-
 export const set = make_callable(class set<T> extends Set<T> {
    constructor (iterable?: Iterable<T> | null) {
       super()

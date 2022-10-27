@@ -18,9 +18,34 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import { hash, repr, set, str, ValueError } from "../src/python/builtin"
+import { python_eq, hash, repr, set, str, ValueError } from "../src/python/builtin"
 import { range } from "../src/utils/math"
 import * as chess from "../src/chess"
+
+const assert_eq = (a, b) => {
+   expect(python_eq(a, b)).toBe(true)
+}
+
+// Doesn't work for:
+// Bound functions
+// Host-defined immutable exotic prototype objects
+// Proxies
+
+// Don't use on primitives
+const copy = (val: object) => {
+   if ("__copy__" in v) {
+      return v.__copy__()
+   }
+   if ("slice" in v) {
+      return v.slice()
+   }
+   const v = Object.create(Object.getPrototypeOf(val))
+   return Object.defineProperties(v, Object.fromEntries(
+      Object.getOwnPropertyNames(val)
+         .concat(Object.getOwnPropertySymbols(val))
+         .map(property => [property, Object.getOwnPropertyDescriptor(val, property)])
+   ))
+}
 
 describe("Square", () => {
    test("square", () => {
@@ -64,6 +89,61 @@ describe("Square", () => {
    })
 })
 
+// Move is after Piece in the src code =/
+describe("Move", () => {
+   test("_equality", () => {
+      const a = chess.Move(chess.A1, chess.A2)
+      const b = chess.Move(chess.A1, chess.A2)
+      const c = chess.Move(chess.H7, chess.H8, chess.BISHOP)
+      const d1 = chess.Move(chess.H7, chess.H8)
+      const d2 = chess.Move(chess.H7, chess.H8)
+
+      expect(a).toStrictEqual(b)
+      expect(b).toStrictEqual(a)
+      expect(d1).toStrictEqual(d2)
+
+      expect(a).not.toStrictEqual(c)
+      expect(c).not.toStrictEqual(d1)
+      expect(b).not.toStrictEqual(d1)
+
+      // Duplicate
+      // assertFalse(d1 != d2)
+   })
+
+   test("_uci_parsing", () => {
+      expect(chess.Move.from_uci("b5c7").uci()).toBe("b5c7")
+      expect(chess.Move.from_uci("e7e8q").uci()).toBe("e7e8q")
+      expect(chess.Move.from_uci("P@e4").uci()).toBe("P@e4")
+      expect(chess.Move.from_uci("B@f4").uci()).toBe("B@f4")
+      expect(chess.Move.from_uci("0000").uci()).toBe("0000")
+   })
+
+   test("_invalid_uci", () => {
+      expect(() => chess.Move.from_uci("")).toThrow(chess.InvalidMoveError)
+      expect(() => chess.Move.from_uci("N")).toThrow(chess.InvalidMoveError)
+      expect(() => chess.Move.from_uci("z1g3")).toThrow(chess.InvalidMoveError)
+      expect(() => chess.Move.from_uci("Q@g9")).toThrow(chess.InvalidMoveError)
+   })
+
+   test("_xboard_move", () => {
+      expect(chess.Move.from_uci("b5c7").xboard()).toBe("b5c7")
+      expect(chess.Move.from_uci("e7e8q").xboard()).toBe("e7e8q")
+      expect(chess.Move.from_uci("P@e4").xboard()).toBe("P@e4")
+      expect(chess.Move.from_uci("B@f4").xboard()).toBe("B@f4")
+      expect(chess.Move.from_uci("0000").xboard()).toBe("@@@@")
+   })
+
+   test("_copy", () => {
+      const a = chess.Move.from_uci("N@f3")
+      const b = chess.Move.from_uci("a1h8")
+      const c = chess.Move.from_uci("g7g8r")
+      assert_eq(copy(a), a)
+      assert_eq(copy(b), b)
+      assert_eq(copy(c), c)
+   })
+})
+
+
 describe("Piece", () => {
    test("equality", () => {
       const a = chess.Piece(chess.BISHOP, chess.WHITE)
@@ -84,6 +164,8 @@ describe("Piece", () => {
       expect(b).not.toStrictEqual(c)
       expect(b).not.toStrictEqual(d1)
       expect(a).not.toStrictEqual(c)
+      // Duplicate
+      // assertFalse(d1 != d2)
 
       expect(repr(a)).not.toBe(repr(b))
       expect(repr(b)).not.toBe(repr(c))
@@ -118,6 +200,6 @@ describe("Piece", () => {
       }
 
       expect(pieces.size).toBe(12)
-      expect(hashes.__eq__(set(range(12)))).toBe(true)
+      assert_eq(hashes, set(range(12)))
    })
 })
