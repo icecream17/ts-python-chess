@@ -85,7 +85,7 @@ export const Move = make_callable(class Move extends dataclass(["from_square", "
          try {
             from_square = index(SQUARE_NAMES, uci.slice(0,2))
             to_square = index(SQUARE_NAMES, uci.slice(2,4))
-            from_square = uci.length === 5 ? index(PIECE_SYMBOLS, uci[4]) : None
+            promotion = uci.length === 5 ? index(PIECE_SYMBOLS, uci[4]) : None
          } catch (err) {
             if (err instanceof ValueError) throw InvalidMoveError(`invalid uci: ${repr(uci)}`)
             throw err
