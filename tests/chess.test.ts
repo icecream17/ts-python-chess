@@ -33,11 +33,11 @@ const assert_eq = (a, b) => {
 
 // Don't use on primitives
 const copy = (val: object) => {
-   if ("__copy__" in v) {
-      return v.__copy__()
+   if ("__copy__" in val) {
+      return val.__copy__()
    }
-   if ("slice" in v) {
-      return v.slice()
+   if ("slice" in val) {
+      return val.slice()
    }
    const v = Object.create(Object.getPrototypeOf(val))
    return Object.defineProperties(v, Object.fromEntries(
