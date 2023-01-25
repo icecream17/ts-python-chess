@@ -65,7 +65,7 @@ export const Move = make_callable(class Move extends dataclass(["from_square", "
    /**
     * Parses a UCI string.
     *
-    * :raises: :exc:`InvalidMoveError` if the UCI string is invalid.
+    * @raises `InvalidMoveError` if the UCI string is invalid.
     */
    static from_uci(uci: str) {
       if (uci === "0000") {

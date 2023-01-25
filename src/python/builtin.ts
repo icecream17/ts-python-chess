@@ -4,15 +4,22 @@
 import { _unset_, None } from "../types/types"
 import { __repr__ as str__repr__ } from "./str"
 import { NoneType, NotImplemented } from "./types"
-import { has_method, is_constructor, is_object, isinstance_str, make_callable } from "../utils/objects"
+import { has_method, is_callable, is_constructor, is_object, isinstance_str, make_callable } from "../utils/objects"
 
 // Lots from cpython
 // See https://docs.python.org/3/license.html
 // Copyright © 2001-2022 Python Software Foundation; All Rights Reserved
 
-// all constants are somewhere else
+// Constants are somewhere else:
 // None: "../types/types"
 // NotImplemented: "./types"
+
+// You'll see `type(x).name`. This gets "Boolean" instead of "bool" etc but oh well.
+// Python error messages are "lazy" in that they don't check if classes
+// have apostrophes: `len(type("' ", (), {})())` will get
+//
+// "TypeError: object of type '' ' has no len()"
+//                             ^^
 
 // Built-in syntax //
 /**
@@ -95,6 +102,26 @@ export const python_with = (context_manager, as_alias: boolean, suite_callback) 
 
 // Built-in functions and types //
 // They're combined right now because idk what to do with `type`
+
+/**
+ * Converts a value into a boolean
+ *
+ * Calls `__bool__` if it exists, else `__len__`.
+ */
+export const bool = (val: unknown = false) => {
+   if ("__bool__" in val) {
+      const result = val.__bool__()
+      if (typeof result !== "boolean") {
+         throw TypeError(`__bool__ should return bool, returned ${type(val).name}`)
+      }
+      return result
+   }
+
+   if ("__len__" in val || "length" in val) {
+      return Boolean(len(val))
+   }
+   return true
+}
 
 // ///////////////////////////////////////////////////////////////////////////////
 // const _noattr = { __proto__: null }
@@ -210,6 +237,40 @@ let next_id = 0n
  */
 export const id = (object: object) =>
    _ids.get(object) ?? (_ids.set(object, next_id), next_id++)
+
+///////////////////////////////////////////////////////////////////////////////
+/** Return the length of an object */
+export const len = (val: unknown) => {
+   if (!("__len__" in val || "length" in val)) {
+      throw TypeError(`Object of type '${type(iter).name}' has no len()`)
+   }
+
+   const result = "__len__" in val ? val.__len__() : val.length
+
+   // bool subclasses int
+   if (typeof result === "boolean") {
+      return Number(result)
+   }
+
+   if (typeof result === "bigint") {
+      if (result < 0) {
+         throw ValueError("__len__() should return >= 0")
+      } else if (result > Number.MAX_VALUE) {
+         throw OverflowError("Cannot fit 'int' into an index-sized integer")
+      }
+      return Number(result)
+   }
+
+   if (typeof result === "number") {
+      if (result < 0) {
+         throw ValueError("__len__() should return >= 0")
+      } else if (!Number.isInteger(result)) {
+         throw TypeError("'float' object cannot be interpreted as an integer")
+      }
+      return result
+   }
+   throw TypeError(`'${type(result).name}' object cannot be interpreted as an integer`)
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 export const next = <T, R, D>(iter: Iterator<T, R>, default_: D | _unset_ = _unset_) => {

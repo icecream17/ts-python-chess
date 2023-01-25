@@ -1,6 +1,18 @@
 
 export const has_method = (val: unknown, method: PropertyKey) => method in val && typeof val[method] === "function"
 
+export const is_callable = (val: unknown) => {
+   try {
+      Function.prototype.toString.call(val)
+      return true
+   } catch (err) {
+      if (err instanceof TypeError) return false
+
+      // Impossible like below
+      throw err
+   }
+}
+
 class _Ignore { }
 export const is_constructor = (arg: unknown) => {
    try {
