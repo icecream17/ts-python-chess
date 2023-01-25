@@ -2,7 +2,7 @@
 import { repr, AssertionError } from "../python/builtin"
 import { None, Optional } from "../types/types"
 import { make_callable } from "../utils/objects"
-import { BB_CORNERS, BB_EMPTY, BB_RANK_2, BB_RANK_1, BB_RANK_7, BB_RANK_7, BB_RANK_8, BB_A1, BB_B1, BB_C1, BB_D1, BB_E1, BB_F1, BB_G1, BB_H1, BB_A8, BB_B8, BB_C8, BB_D8, BB_E8, BB_F8, BB_G8, BB_H8 } from "./bboard"
+import { BB_CORNERS, BB_EMPTY, BB_RANK_2, BB_RANK_1, BB_RANK_7, BB_RANK_8, BB_A1, BB_B1, BB_C1, BB_D1, BB_E1, BB_F1, BB_G1, BB_H1, BB_A8, BB_B8, BB_C8, BB_D8, BB_E8, BB_F8, BB_G8, BB_H8 } from "./bboard"
 import { STARTING_BOARD_FEN } from "./board_metadata"
 import { BB_BLACK, BB_WHITE } from "./colors"
 import { PieceType, PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING } from "./pieces"
