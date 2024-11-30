@@ -3,7 +3,7 @@ export const has_method = (val: unknown, method: PropertyKey) => method in val &
 
 export const is_callable = (val: unknown) => {
    try {
-      Function.prototype.toString.call(val)
+      [].filter(val)
       return true
    } catch (err) {
       if (err instanceof TypeError) return false
