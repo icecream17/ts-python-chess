@@ -18,10 +18,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-export type _EnPassantSpec = "legal" | "fen" | "xfen"
+export type EnPassantSpec = "legal" | "fen" | "xfen"
 
 /** The side to move or color of a piece */
 export type Color = boolean
+export type ColorName = "white" | "black"
 export type PieceType = 1 | 2 | 3 | 4 | 5 | 6
 export type PieceLetter = "p" | "n" | "b" | "r" | "q" | "k"
 export type PieceName = "pawn" | "knight" | "bishop" | "rook" | "queen" | "king"
@@ -37,6 +38,8 @@ export type Square =
 
 export type LineIndex = 0n | 1n | 2n | 3n | 4n | 5n | 6n | 7n
 export type KingDistance = 0n | 1n | 2n | 3n | 4n | 5n | 6n | 7n
+export type ManhattanDistance = 0n | 1n | 2n | 3n | 4n | 5n | 6n | 7n | 8n | 9n | 10n | 11n | 12n | 13n | 14n
+export type KnightDistance = 0n | 1n | 2n | 3n | 4n | 5n | 6n
 
 export type FileName = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h"
 export type RankName = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8"

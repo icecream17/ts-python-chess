@@ -6,7 +6,7 @@ import { None } from "../types/types"
 import { make_callable } from "../utils/objects"
 import { InvalidMoveError } from "./move_errors"
 import { piece_symbol, PieceType, PIECE_SYMBOLS } from "./pieces"
-import { SQUARE_NAMES } from "./squares"
+import { A1, SQUARE_NAMES } from "./squares"
 
 /**
  * Represents a move from a square to a square and possibly the promotion
@@ -90,7 +90,7 @@ export const Move = make_callable(class Move extends dataclass(["from_square", "
             if (err instanceof ValueError) throw InvalidMoveError(`invalid uci: ${repr(uci)}`)
             throw err
          }
-         if (from_square === to_square) {
+         if (from_square === to_square && from_square !== A1) {
             throw InvalidMoveError(`invalid uci (use 0000 for null moves): ${repr(uci)}`)
          }
          return this(from_square, to_square, promotion)

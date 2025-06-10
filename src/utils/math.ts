@@ -28,3 +28,5 @@ export function* range(max: bigint) {
  * excluding the sign and leading zeros
  */
 export const bit_length = (b: bigint) => BigInt(abs(b).toString(2).length)
+
+export const _ceil_div = (a: bigint, b: bigint) => a > b * (a / b) ? a / b + 1n : a / b

@@ -1,7 +1,7 @@
 
 # ts-python-chess
 
-***This is Not finished at all***
+**_Not close to finishing_**: see [the progress tracking issue (#276)](https://github.com/icecream17/ts-python-chess/issues/276)
 
 I decided to make my own version of chess.js
 

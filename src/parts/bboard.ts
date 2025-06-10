@@ -156,11 +156,13 @@ export const _sliding_attacks = (square: Square, occupied: Bitboard, deltas: Ite
 
       while (true) {
          sq += delta
-         if (!(0n <= sq && sq < 64n) || square_distance(sq, sq - delta) < 2n)
+         if (!(0n <= sq && sq < 64n) || square_distance(sq as Square, sq - delta as Square) < 2n)
             break
 
+         // @ts-expect-error -- bigint index
          attacks |= BB_SQUARES[sq]
 
+         // @ts-expect-error -- bigint index
          if (occupied && BB_SQUARES[sq])
             break
       }
@@ -177,8 +179,8 @@ export const BB_KING_ATTACKS = SQUARES.map(sq => _step_attacks(sq, [9n, 8n, 7n, 
 export const BB_PAWN_ATTACKS = [[-7n, -9n], [7n, 9n]].map(deltas => SQUARES.map(sq => _step_attacks(sq, deltas)))
 
 
-export const _edges = (square: Square): Bitboard =>
-   ((BB_RANK_1 | BB_RANK_8) & ~BB_RANKS[square_rank(square)]) |
+export const _edges = (square: Square): Bitboard => // @ts-expect-error -- bigint index
+   ((BB_RANK_1 | BB_RANK_8) & ~BB_RANKS[square_rank(square)]) | // @ts-expect-error -- bigint index
    ((BB_FILE_A | BB_FILE_H) & ~BB_FILES[square_file(square)])
 
 export function* _carry_rippler(mask: Bitboard): Generator<Bitboard> {
@@ -197,15 +199,17 @@ export function* _carry_rippler(mask: Bitboard): Generator<Bitboard> {
 // "Allocate" all memory at once using `Array(SQUARES.length)`
 // instead of pushing the data to the array 64 times
 // (which means allocating new memory multiple times)
+
+// @ts-expect-error -- bigint index
 export const _attack_table = (deltas: bigint[]): [Bitboard[], Record<Bitboard, Bitboard>[]] => {
-   const mask_table = []
-   const attack_table = []
+   const mask_table: Bitboard[] = [] // @ts-expect-error -- bigint index
+   const attack_table: Record<Bitboard, Bitboard>[] = []
 
    for (const square of SQUARES) {
       const attacks = {}
 
       const mask = _sliding_attacks(square, 0n, deltas) & ~_edges(square)
-      for (const subset of _carry_rippler(mask))
+      for (const subset of _carry_rippler(mask)) // @ts-expect-error -- bigint index
          attacks[subset] = _sliding_attacks(square, subset, deltas)
 
       attack_table.push(attacks)
@@ -222,9 +226,9 @@ export const [BB_RANK_MASKS, BB_RANK_ATTACKS] = _attack_table([-1n, 1n])
 
 export const _rays = (): Bitboard[][] => {
    const rays = []
-   for (const [a, bb_a] in BB_SQUARES.entries()) {
+   for (const [a, bb_a] of BB_SQUARES.entries()) {
       const rays_row = []
-      for (const [b, bb_b] in BB_SQUARES.entries())
+      for (const [b, bb_b] of BB_SQUARES.entries())
           if (BB_DIAG_ATTACKS[a][0] & bb_b)
              rays_row.push((BB_DIAG_ATTACKS[a][0] & BB_DIAG_ATTACKS[b][0]) | bb_a | bb_b)
           else if (BB_RANK_ATTACKS[a][0] & bb_b)

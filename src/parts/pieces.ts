@@ -1,8 +1,8 @@
 import { None, PieceType } from "../types/types"
 
 export { PieceType } from "../types/types"
-export const [PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING] = [1, 2, 3, 4, 5, 6] as const
-export const PIECE_TYPES = [PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING] as const
+export const [PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING] = [1, 2, 3, 4, 5, 6] as PieceType[]
+export const PIECE_TYPES: PieceType[] = [PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING]
 export const PIECE_SYMBOLS = [None, "p", "n", "b", "r", "q", "k"] as const
 export const PIECE_NAMES = [None, "pawn", "knight", "bishop", "rook", "queen", "king"] as const
 

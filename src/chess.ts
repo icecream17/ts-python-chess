@@ -47,6 +47,7 @@ declare global {
 }
 
 // Definition order is preserved
+export * from "./parts/header"
 export * from "./parts/colors"
 export * from "./parts/pieces"
 export * from "./parts/board_metadata"

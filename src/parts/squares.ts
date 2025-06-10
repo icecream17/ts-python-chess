@@ -1,6 +1,7 @@
 import { ValueError } from "../python/builtin"
-import { KingDistance, LineIndex, Square } from "../types/types"
-import { abs, greater } from "../utils/math"
+import { KingDistance, KnightDistance, LineIndex, ManhattanDistance, Square } from "../types/types"
+import { _ceil_div, abs, greater, max } from "../utils/math"
+import { BB_CORNERS, BB_SQUARES } from "./bboard"
 
 export { Square } from "../types/types"
 
@@ -81,9 +82,30 @@ export const square_file = (square: Square) => (square & 0b000111n) as LineIndex
 /** Gets the rank index of the square where `0` is the first rank */
 export const square_rank = (square: Square) => (square >> 3n) as LineIndex
 
-/** Gets the distance (i.e., number of king steps) from square _a_ to _b_ */
+/** Gets the Chebyshev distance (i.e., number of king steps) from square _a_ to _b_ */
 export const square_distance = (a: Square, b: Square) =>
    greater(abs(square_file(a) - square_file(b)), abs(square_rank(a) - square_rank(b))) as KingDistance
+
+/** Gets the Manhattan/Taxicab distance (i.e., the number of orthogonal king steps) from square *a* to *b*. */
+export const square_manhattan_distance = (a: Square, b: Square) =>
+   abs(square_file(a) - square_file(b)) + abs(square_rank(a) - square_rank(b)) as ManhattanDistance
+
+/** Gets the Knight distance (i.e., the number of knight moves) from square *a* to *b*. */
+export const square_knight_distance = (a: Square, b: Square) => {
+   const dx = abs(square_file(a) - square_file(b))
+   const dy = abs(square_rank(a) - square_rank(b))
+
+   if (dx + dy === 1n)
+      return 3
+   else if (dx === dy && dy === 2n)
+      return 4
+   else if (dx === dy && dy === 1n) // @ts-expect-error -- bigint index // a == b == c works precisely as expected
+      if (BB_SQUARES[a] & BB_CORNERS || BB_SQUARES[b] & BB_CORNERS) // Special case only for corner squares
+         return 4
+
+   const m = _ceil_div(max(dx * 3n, dy * 3n, (dx + dy) * 2n), 6n)
+   return m + ((m + dx + dy) % 2n) as KnightDistance
+}
 
 /** Mirrors the square vertically */
 export const square_mirror = (square: Square) => (square ^ 0b111000n) as Square

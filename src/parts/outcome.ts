@@ -1,3 +1,4 @@
+import { dataclass } from "../python/dataclasses"
 import { Color, None, Optional } from "../types/types";
 import { BLACK, WHITE } from "./colors";
 
@@ -29,7 +30,7 @@ export const enum Termination {
  * Information about the outcome of an ended game,
  * usually obtained by `chess.Board.outcome()`.
  */
-export class Outcome {
+export const Outcome = make_callable(class Outcome extends dataclass(["termination", "winner"]) {
    constructor (
       /** The reason for the game to have ended */
       public termination: Termination,
