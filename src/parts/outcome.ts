@@ -45,4 +45,4 @@ export const Outcome = make_callable(class Outcome extends dataclass(["terminati
          case BLACK: return "0-1";
       }
    }
-}
+})
