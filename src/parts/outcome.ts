@@ -1,5 +1,6 @@
 import { dataclass } from "../python/dataclasses"
 import { Color, None, Optional } from "../types/types";
+import { make_callable } from "../utils/objects"
 import { BLACK, WHITE } from "./colors";
 
 /** Enum with reasons for a game to be over */
